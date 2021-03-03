@@ -80,7 +80,7 @@ public:
             if (strcmp(name, g._students[i]._name) == 0)
             {
                 for (; i<g._size-1; i++) g._students[i]=g._students[i+1];
-                Student tmp;    g._students[g._size-1] = tmp;
+                Student tmp;    g._students[--g._size] = tmp;
             }
         cout << "\t Student " << name << " not found! \n";         
     }
@@ -162,10 +162,10 @@ std::ostream& operator<< (std::ostream &out, const Group &gr)
 int main()
 {
     int i;
-    Student st0("БАЛАНОВСКИЙ АНТОН ЛЕОНИДОВИЧ", 89266658554, 11, 5, 2001),
-            st1("ГОНЧАРЕНКО ЕВГЕНИЙ ЕВГЕНИЕВИЧ", 89102200604, 4, 6, 2000),
-            st2("ОКОНИШНИКОВ АРИЙ АРИЕВИЧ", 89853813689, 2, 4, 2002),
-            st3("ГЛАДЫШЕВ ГЛЕБ ЮРЬЕВИЧ", 89152307262, 10, 10, 2001);
+    Student st0("БАЛАНОВСКИЙ АНТОН ЛЕОНИДОВИЧ", 89266000000, 11, 5, 2001),
+            st1("ГОНЧАРЕНКО ЕВГЕНИЙ ЕВГЕНИЕВИЧ", 89102000000, 4, 6, 2000),
+            st2("ОКОНИШНИКОВ АРИЙ АРИЕВИЧ", 89853000000, 2, 4, 2002),
+            st3("ГЛАДЫШЕВ ГЛЕБ ЮРЬЕВИЧ", 89152000000, 10, 10, 2001);
     //cout << st0 << st1 << st2 << st3;
     Group gr214(2,3,0); gr214.AddSt(gr214,st0); gr214.AddSt(gr214,st1);  gr214.AddSt(gr214,st2);  gr214.AddSt(gr214,st3);
     
