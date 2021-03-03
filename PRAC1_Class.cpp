@@ -68,6 +68,9 @@ public:
 
     void AddSt(Group & g, Student s)
     {
+        int i;
+        for (i=0; i<g._size; i++)
+            if (strcmp(s._name, g._students[i]._name) == 0) return;
         g._students = (Student *)realloc(g._students, sizeof(Student)*(g._size+2));
         g._students[g._size]=s;
         g._size+=1;           //cout << g._size;
@@ -82,7 +85,7 @@ public:
                 for (; i<g._size-1; i++) g._students[i]=g._students[i+1];
                 Student tmp;    g._students[--g._size] = tmp;
             }
-        cout << "\t Student " << name << " not found! \n";         
+        cout << "\t Student for removal " << name << " not found! \n";         
     }
 
     void NameSort(Group & g)
@@ -91,6 +94,7 @@ public:
         for (i=0; i<g._size; i++)
             for (j=0; j<i; j++)
                 if (strcmp(g._students[i]._name, g._students[j]._name) < 0) StSwap(g._students[i], g._students[j]);
+        cout << "NameSort done. \n";
     }
 
     void DateSort(Group & g)
@@ -100,7 +104,8 @@ public:
             for (j=0; j<i; j++)
                 if (g._students[i]._date_year < g._students[j]._date_year) StSwap(g._students[i], g._students[j]);  
                 else if ((g._students[i]._date_year == g._students[j]._date_year) and (g._students[i]._date_month < g._students[j]._date_month)) StSwap(g._students[i], g._students[j]);
-                     else if ((g._students[i]._date_month == g._students[j]._date_month) and (g._students[i]._date_day < g._students[j]._date_day)) StSwap(g._students[i], g._students[j]);   
+                     else if ((g._students[i]._date_month == g._students[j]._date_month) and (g._students[i]._date_day < g._students[j]._date_day)) StSwap(g._students[i], g._students[j]); 
+        cout << "DateSort done. \n";
     }
 
     void NumberSort(Group & g)
@@ -109,6 +114,7 @@ public:
         for (i=0; i<g._size; i++)
             for (j=0; j<i; j++)
                 if (g._students[i]._number < g._students[j]._number) StSwap(g._students[i], g._students[j]);
+        cout << "NumberSort done. \n";
     }    
 
     Student NameSeek(Group & g, const char * name) const
@@ -155,6 +161,12 @@ std::ostream& operator<< (std::ostream &out, const Group &gr)
     return(out);
 }
 
+void menu()
+{
+    cout << "Функционал команд: \n 0. Вызов этого меню: menu \n 1. Просмотр группы: see \n 2. Добавить участника add ";
+    cout << "\n 3. Редактировать участника: change \n 4. Удалить участника: remove \n 5-6. Сортировка по имени/телефону/дате рождения: sortn, sortp, sortb \n 7-9. Сортировка по имени/телефону/дате рождения: findn, findp, findb \n 10. Завершение работы программы: end\n";
+}
+
 
 
 
@@ -180,12 +192,35 @@ int main()
     gr214.NameSeek(gr214, "АРМЕН");
     gr214.DateSeek(gr214, 10, 10, 2001);
     gr214.DateSeek(gr214, 10, 12, 2001);
-    gr214.NumberSeek(gr214, 89853813689);
+    gr214.NumberSeek(gr214, 89853000000);
     gr214.NumberSeek(gr214, 88005553535);
 
     gr214.RemoveSt(gr214,"ГЛАДЫШЕВ ГЛЕБ ЮРЬЕВИЧ");
-    cout << "\t Удалили Глеба... \n" << gr214; 
+    cout << "\t Удалили Глеба... \n" << gr214;
 
+    gr214.AddSt(gr214,st2); gr214.AddSt(gr214,st3); gr214.AddSt(gr214,st3);
+    cout << "\t Добавили \n" << gr214;
 
+    cout << "\n\t Добро пожаловать в редактор Группы 214! \n     Первоначально в группе 4 участника, с заполненными полями имени, номера и даты рождения соответственно. \n"; menu();
+    for(;;)
+    {
+        char str[256];
+        cout << "Введите команду: ";
+        cin >> str;
+
+        if (!strcmp("see", str)) cout << gr214;
+        else if (!strcmp("menu", str)) menu();
+        else if (!strcmp("sortn", str)) gr214.NameSort(gr214);
+        else if (!strcmp("sortb", str)) gr214.DateSort(gr214);
+        else if (!strcmp("sortp", str)) gr214.NumberSort(gr214);
+        else if (!strcmp("findn", str)) ;
+        else if (!strcmp("findb", str)) ;
+        else if (!strcmp("findp", str)) ;
+        else if (!strcmp("add", str)) ;
+        else if (!strcmp("change", str)) ;
+        else if (!strcmp("remove", str)) ;
+        else if (!strcmp("end", str)) { cout << "Ending!! \n"; break;}
+        else cout << "No such cmd \n";
+    }
     return(0);
 }
