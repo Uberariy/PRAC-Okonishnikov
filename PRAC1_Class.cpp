@@ -1,6 +1,7 @@
 //valgrind --leak-check=full -v -q --trace-children=yes --track-fds=yes ./executable
 #include <iostream>
 #include <cmath>
+#include <string>
 #include <cstring>
 using namespace std;
 
@@ -83,10 +84,22 @@ public:
             if (strcmp(name, g._students[i]._name) == 0)
             {
                 for (; i<g._size-1; i++) g._students[i]=g._students[i+1];
-                Student tmp;    g._students[--g._size] = tmp;
+                Student tmp;    g._students[--g._size] = tmp;   return;
             }
         cout << "\t Student for removal " << name << " not found! \n";         
     }
+
+    void ChangeSt(Group & g, Student s)
+    {
+        int i;
+        for (i=0; i<g._size; i++)
+            if (strcmp(s._name, g._students[i]._name) == 0)
+            {
+                g._students[i]._number = s._number;     g._students[i]._date_day = s._date_day;     g._students[i]._date_month = s._date_month;     g._students[i]._date_year = s._date_year;
+                cout << "\t Student " << s._name << " found and changed! \n";   return;
+            }
+        cout << "\t Student " << s._name << " not found! \n";  return;
+    } 
 
     void NameSort(Group & g)
     {
@@ -163,7 +176,7 @@ std::ostream& operator<< (std::ostream &out, const Group &gr)
 
 void menu()
 {
-    cout << "Функционал команд: \n 0. Вызов этого меню: menu \n 1. Просмотр группы: see \n 2. Добавить участника add ";
+    cout << "\x1b[31mФункционал команд: \x1b[0m\n 0. Вызов этого меню: menu \n 1. Просмотр группы: see \n 2. Добавить участника add ";
     cout << "\n 3. Редактировать участника: change \n 4. Удалить участника: remove \n 5-6. Сортировка по имени/телефону/дате рождения: sortn, sortp, sortb \n 7-9. Сортировка по имени/телефону/дате рождения: findn, findp, findb \n 10. Завершение работы программы: end\n";
 }
 
@@ -174,51 +187,31 @@ void menu()
 int main()
 {
     int i;
-    Student st0("БАЛАНОВСКИЙ АНТОН ЛЕОНИДОВИЧ", 89266000000, 11, 5, 2001),
-            st1("ГОНЧАРЕНКО ЕВГЕНИЙ ЕВГЕНИЕВИЧ", 89102000000, 4, 6, 2000),
-            st2("ОКОНИШНИКОВ АРИЙ АРИЕВИЧ", 89853000000, 2, 4, 2002),
-            st3("ГЛАДЫШЕВ ГЛЕБ ЮРЬЕВИЧ", 89152000000, 10, 10, 2001);
+    Student st0("БАЛАНОВСКИЙ", 89266000000, 11, 5, 2001),
+            st1("ГОНЧАРЕНКО", 89102000000, 4, 6, 2000),
+            st2("ОКОНИШНИКОВ", 89853000000, 2, 4, 2002),
+            st3("ГЛАДЫШЕВ", 89152000000, 10, 10, 2001);
     //cout << st0 << st1 << st2 << st3;
     Group gr214(2,3,0); gr214.AddSt(gr214,st0); gr214.AddSt(gr214,st1);  gr214.AddSt(gr214,st2);  gr214.AddSt(gr214,st3);
-    
-    gr214.DateSort(gr214);   
-    cout << "\t Сортировка по Дню Рождения: \n" << gr214;    
-    gr214.NameSort(gr214);   
-    cout << "\t Сортировка по имени: \n" << gr214;   
-    gr214.NumberSort(gr214);
-    cout << "\t Сортировка по номеру телефона: \n" << gr214;  
 
-    gr214.NameSeek(gr214, "БАЛАНОВСКИЙ АНТОН ЛЕОНИДОВИЧ");
-    gr214.NameSeek(gr214, "АРМЕН");
-    gr214.DateSeek(gr214, 10, 10, 2001);
-    gr214.DateSeek(gr214, 10, 12, 2001);
-    gr214.NumberSeek(gr214, 89853000000);
-    gr214.NumberSeek(gr214, 88005553535);
-
-    gr214.RemoveSt(gr214,"ГЛАДЫШЕВ ГЛЕБ ЮРЬЕВИЧ");
-    cout << "\t Удалили Глеба... \n" << gr214;
-
-    gr214.AddSt(gr214,st2); gr214.AddSt(gr214,st3); gr214.AddSt(gr214,st3);
-    cout << "\t Добавили \n" << gr214;
-
-    cout << "\n\t Добро пожаловать в редактор Группы 214! \n     Первоначально в группе 4 участника, с заполненными полями имени, номера и даты рождения соответственно. \n"; menu();
+    cout << "\n\t \x1b[31mДобро пожаловать в редактор Группы 214! \n     Первоначально в группе 4 участника, с заполненными полями имени, номера и даты рождения соответственно. \x1b[0m\n"; menu();
     for(;;)
     {
-        char str[256];
-        cout << "Введите команду: ";
-        cin >> str;
+        char str[256];  long phone;  int year, day, month;
+        cout << "\x1b[31mВведите команду: \x1b[0m";
+        std::cin >> str;
 
         if (!strcmp("see", str)) cout << gr214;
         else if (!strcmp("menu", str)) menu();
         else if (!strcmp("sortn", str)) gr214.NameSort(gr214);
         else if (!strcmp("sortb", str)) gr214.DateSort(gr214);
         else if (!strcmp("sortp", str)) gr214.NumberSort(gr214);
-        else if (!strcmp("findn", str)) ;
-        else if (!strcmp("findb", str)) ;
-        else if (!strcmp("findp", str)) ;
-        else if (!strcmp("add", str)) ;
-        else if (!strcmp("change", str)) ;
-        else if (!strcmp("remove", str)) ;
+        else if (!strcmp("findn", str)) {cout << " -> Введите имя: "; std::cin >> str; gr214.NameSeek(gr214, str);}
+        else if (!strcmp("findb", str)) {cout << " -> Введите дату рождения: Год: "; std::cin >> year; cout << " -> Месяц: "; std::cin >> month; cout << " -> День: "; std::cin >> day; gr214.DateSeek(gr214, day, month, year);}
+        else if (!strcmp("findp", str)) {cout << " -> Введите номер телефона: "; std::cin >> phone; gr214.NumberSeek(gr214, phone);}
+        else if (!strcmp("add", str)) {cout << " -> Введите имя: "; std::cin >> str; cout << " -> Введите номер телефона: "; std::cin >> phone; cout << " -> Введите дату рождения: Год: "; std::cin >> year; cout << " -> Месяц: "; std::cin >> month; cout << " -> День: "; std::cin >> day; Student st(str, phone, day, month, year); gr214.AddSt(gr214, st);}
+        else if (!strcmp("change", str)) {cout << " -> Введите имя: "; std::cin >> str; cout << " -> Введите номер телефона: "; std::cin >> phone; cout << " -> Введите дату рождения: Год: "; std::cin >> year; cout << " -> Месяц: "; std::cin >> month; cout << " -> День: "; std::cin >> day; Student st(str, phone, day, month, year); gr214.ChangeSt(gr214, st);}
+        else if (!strcmp("remove", str)) {cout << " -> Введите имя: "; std::cin >> str; gr214.RemoveSt(gr214, str);}
         else if (!strcmp("end", str)) { cout << "Ending!! \n"; break;}
         else cout << "No such cmd \n";
     }
