@@ -41,14 +41,9 @@ public:
         for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   _A[i][j] = A._A[i][j];        
     }
 
-//    int*& M::operator[] (const int i)
-  //  {   // returns i line
-    //    return _A[i];
-   // }
-
-    int& operator() (int i, int j)
+    int& operator() (int i, int j) const
     {
-       if ((i < 0) || (j < 0) || (i > _len) || (j > _wid)) { cerr << "(): wrong indexes\n"; } 
+       if ((i < 0) || (j < 0) || (i > _len) || (j > _wid)) { cerr << "(): wrong indexes\n"; exit(1);} 
        else return(_A[i][j]);
     }
 
@@ -111,6 +106,17 @@ public:
             return(B);
         }
     }  
+
+    M operator* (int n)
+    {
+        int i, j;
+        M B(_len, _wid, 0);
+        B = *this + B;
+        for (i=0; i<_len; i++)
+            for (j=0; j<_wid; j++) 
+                B._A[i][j] = _A[i][j] * n;
+        return(B);
+    }
 };
 
 std::ostream& operator<< (std::ostream &out, const M &A)
@@ -126,11 +132,19 @@ std::ostream& operator<< (std::ostream &out, const M &A)
 
 int main()
 {
-    M A(3, 2, 1);
-    M B(2, 3, 2);
+    M A(3, 2, 1);   A(0, 1) = A(1, 0) = A(2, 1) = 2;
+    M B(2, 3, 2);   B(1, 0) = B(0, 1) = B(1, 2) = 3;
     M C(1, 1, 1);
-    cout << A << B;
+
+    cout << "Матрицы А и B:\n" << A << B;
     C = B*A;
-    cout << C;
+    cout << "Произведение двух матриц - матрица С:\n" << C;
+
+    M D(2, 2, 4);
+    cout << "Матрица D:\n" << D;
+    cout << "Сумма двух матриц С и D:\n" << C+D;
+
+    cout << "Произведение матрицы A на число 0:\n" << A*0;
+    cout << "Произведение матрицы A на число 10:\n" << A*10;
     return(0);
 }
