@@ -31,6 +31,16 @@ public:
         delete[] _A;
     }
 
+    M (const M & A)
+    {
+        int i, j;
+        _len = A._len; _wid = A._wid;
+        _A = (int **) new int* [_len];
+        for (i=0; i<_len; i++)
+            _A[i] = (int *) new int [_wid];     
+        for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   _A[i][j] = A._A[i][j];        
+    }
+
 //    int*& M::operator[] (const int i)
   //  {   // returns i line
     //    return _A[i];
@@ -42,7 +52,7 @@ public:
        else return(_A[i][j]);
     }
 
-    M &operator= (const M & A)
+    M &operator= (M  A)
     {
         int i, j;
         for (i=0; i<_len; i++) delete[] _A[i];
@@ -59,17 +69,35 @@ public:
     {
         int i, j;
         if ((_wid != A._wid) || (_len != A._len))  { cerr << "+: wrong indexes\n"; exit(1); } 
-        else for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   _A[i][j] += A._A[i][j];
+        else
+        {
+            M B(_len, _wid, 0);
+            for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   
+            { 
+                B._A[i][j] += A._A[i][j];
+                B._A[i][j] += _A[i][j];
+            }
+            return(B);
+        }
     }
 
     M operator- (const M & A)
     {
         int i, j;
         if ((_wid != A._wid) || (_len != A._len))  { cerr << "-: wrong indexes\n"; exit(1); } 
-        else for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   _A[i][j] -= A._A[i][j];
+        else 
+        {
+            M B(_len, _wid, 0);
+            for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   
+            { 
+                B._A[i][j] -= A._A[i][j];
+                B._A[i][j] += _A[i][j];
+            }
+            return(B);
+        }
     } 
 
-    M &operator* (const M & A)
+    M operator* (const M & A)
     {
         int i, j, k;
         if ((_wid != A._len) || (_len != A._wid))  { cerr << "*: wrong indexes\n"; exit(1); }
@@ -80,16 +108,7 @@ public:
                 for (j=0; j<_len; j++)
                     for (k=0; k<_wid; k++)
                         { B._A[i][j] += _A[i][k] * A._A[k][i];}// cout << B._A[i][j] << " ";}
-
-            for (i=0; i<_len; i++) delete[] _A[i];
-            delete[] _A;
-            _wid = _len;
-            _A = (int **) new int* [_len];
-            for (i=0; i<_len; i++)
-                _A[i] = (int *) new int [_wid];            
-
-            for (j=0; j<_len; j++)   for (i=0; i<_len; i++)   {_A[i][j] = B._A[i][j]; }//fprintf(stderr, "a");}
-            return(*this);
+            return(B);
         }
     }  
 };
@@ -111,7 +130,7 @@ int main()
     M B(2, 3, 2);
     M C(1, 1, 1);
     cout << A << B;
-    A = A*B;
-    cout << A;
+    C = B*A;
+    cout << C;
     return(0);
 }
