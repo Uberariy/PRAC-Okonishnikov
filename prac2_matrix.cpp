@@ -3,14 +3,14 @@
 #include <cstring>
 using namespace std;
 
-class M {
+class Matrix {
     int **_A;
     int _len, _wid;
 
 public:
-    friend std::ostream& operator<< (std::ostream &out, const M &A);
+    friend std::ostream& operator<< (std::ostream &out, const Matrix &A);
 
-    M (int len, int wid, int st=0)
+    Matrix (int len, int wid, int start=0)  // "start" represent initial value for matrix elements
     {
         int i, j;        
         if ((len <= 0) || (wid <= 0)) { cerr << "CONSTR: wrong size\n"; exit(1); }
@@ -19,19 +19,19 @@ public:
             _A = (int **) new int* [len];
             for (i=0; i<len; i++)
                 _A[i] = (int *) new int [wid];
-            for (j=0; j<wid; j++)   for (i=0; i<len; i++)   _A[i][j] = st;
+            for (j=0; j<wid; j++)   for (i=0; i<len; i++)   _A[i][j] = start;
             _len = len; _wid = wid;
         }
     }
 
-    ~M() 
+    ~Matrix() 
     {
         int i, j;
         for (i=0; i<_len; i++) delete[] _A[i];
         delete[] _A;
     }
 
-    M (const M & A)
+    Matrix (const Matrix & A)
     {
         int i, j;
         _len = A._len; _wid = A._wid;
@@ -47,7 +47,7 @@ public:
        else return(_A[i][j]);
     }
 
-    M &operator= (M  A)
+    Matrix &operator= (const Matrix & A)
     {
         int i, j;
         for (i=0; i<_len; i++) delete[] _A[i];
@@ -60,13 +60,13 @@ public:
         return(*this);
     }
 
-    M operator+ (const M & A)
+    Matrix operator+ (const Matrix & A)
     {
         int i, j;
         if ((_wid != A._wid) || (_len != A._len))  { cerr << "+: wrong indexes\n"; exit(1); } 
         else
         {
-            M B(_len, _wid, 0);
+            Matrix B(_len, _wid, 0);
             for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   
             { 
                 B._A[i][j] += A._A[i][j];
@@ -76,13 +76,13 @@ public:
         }
     }
 
-    M operator- (const M & A)
+    Matrix operator- (const Matrix & A)
     {
         int i, j;
         if ((_wid != A._wid) || (_len != A._len))  { cerr << "-: wrong indexes\n"; exit(1); } 
         else 
         {
-            M B(_len, _wid, 0);
+            Matrix B(_len, _wid, 0);
             for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   
             { 
                 B._A[i][j] -= A._A[i][j];
@@ -92,26 +92,25 @@ public:
         }
     } 
 
-    M operator* (const M & A)
+    Matrix operator* (const Matrix & A)
     {
         int i, j, k;
-        if ((_wid != A._len) || (_len != A._wid))  { cerr << "*: wrong indexes\n"; exit(1); }
+        if (_wid != A._len)  { cerr << "*: wrong indexes\n"; exit(1); }
         else 
         {
-            M B(_len, _len, 0); //cout << _len;
+            Matrix B(_len, _len, 0);
             for (i=0; i<_len; i++)
                 for (j=0; j<_len; j++)
                     for (k=0; k<_wid; k++)
-                        { B._A[i][j] += _A[i][k] * A._A[k][i];}// cout << B._A[i][j] << " ";}
+                        { B._A[i][j] += _A[i][k] * A._A[k][i];}
             return(B);
         }
     }  
 
-    M operator* (int n)
+    Matrix operator* (int n)
     {
         int i, j;
-        M B(_len, _wid, 0);
-        B = *this + B;
+        Matrix B(_len, _wid, 0);
         for (i=0; i<_len; i++)
             for (j=0; j<_wid; j++) 
                 B._A[i][j] = _A[i][j] * n;
@@ -119,7 +118,7 @@ public:
     }
 };
 
-std::ostream& operator<< (std::ostream &out, const M &A)
+std::ostream& operator<< (std::ostream &out, const Matrix &A)
 {
     int i, j;
     for (i=0; i<A._len; i++)
@@ -132,15 +131,15 @@ std::ostream& operator<< (std::ostream &out, const M &A)
 
 int main()
 {
-    M A(3, 2, 1);   A(0, 1) = A(1, 0) = A(2, 1) = 2;
-    M B(2, 3, 2);   B(1, 0) = B(0, 1) = B(1, 2) = 3;
-    M C(1, 1, 1);
+    Matrix A(3, 2, 1);   A(0, 1) = A(1, 0) = A(2, 1) = 2;
+    Matrix B(2, 3, 2);   B(1, 0) = B(0, 1) = B(1, 2) = 3;
+    Matrix C(1, 1, 1);
 
     cout << "Матрицы А и B:\n" << A << B;
-    C = B*A;
+    C = B * A;
     cout << "Произведение двух матриц - матрица С:\n" << C;
 
-    M D(2, 2, 4);
+    Matrix D(2, 2, 4);
     cout << "Матрица D:\n" << D;
     cout << "Сумма двух матриц С и D:\n" << C+D;
 
