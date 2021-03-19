@@ -98,11 +98,11 @@ public:
         if (_wid != A._len)  { cerr << "*: wrong indexes\n"; exit(1); }
         else 
         {
-            Matrix B(_len, _len, 0);
+            Matrix B(_len, A._wid, 0);
             for (i=0; i<_len; i++)
-                for (j=0; j<_len; j++)
+                for (j=0; j<A._wid; j++)
                     for (k=0; k<_wid; k++)
-                        { B._A[i][j] += _A[i][k] * A._A[k][i];}
+                        { B._A[i][j] += _A[i][k] * A._A[k][j];}
             return(B);
         }
     }  
@@ -132,7 +132,7 @@ std::ostream& operator<< (std::ostream &out, const Matrix &A)
 int main()
 {
     Matrix A(3, 2, 1);   A(0, 1) = A(1, 0) = A(2, 1) = 2;
-    Matrix B(2, 3, 2);   B(1, 0) = B(0, 1) = B(1, 2) = 3;
+    Matrix B(4, 3, 2);   B(1, 0) = B(0, 1) = B(1, 2) = 3;
     Matrix C(1, 1, 1);
 
     cout << "Матрицы А и B:\n" << A << B;
@@ -141,7 +141,7 @@ int main()
 
     Matrix D(2, 2, 4);
     cout << "Матрица D:\n" << D;
-    cout << "Сумма двух матриц С и D:\n" << C+D;
+    //cout << "Сумма двух матриц С и D:\n" << C+D;
 
     cout << "Произведение матрицы A на число 0:\n" << A*0;
     cout << "Произведение матрицы A на число 10:\n" << A*10;
