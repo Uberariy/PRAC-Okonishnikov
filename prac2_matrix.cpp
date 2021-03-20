@@ -9,6 +9,7 @@ protected:
     int _len, _wid;
 
 public:
+    static int countcallF;  // Static value, represents amount of calls to funtion F
     friend std::ostream& operator<< (std::ostream &out, const Matrix &A);
 
     Matrix (int len, int wid, int start=0)  // "start" represent initial value for matrix elements
@@ -130,6 +131,7 @@ public:
         int i, j, sum=0;
         for (j=0; j<_wid; j++)   for (i=0; i<_len; i++)   
             sum += _A[i][j];
+        countcallF++;
         return(sum);
     }
 };
@@ -184,7 +186,10 @@ public:
     } 
 
     int F () 
-    {    return((*this)*(*this));   } 
+    {    
+        countcallF++;
+        return((*this)*(*this));   
+    } 
 };
 
 std::ostream& operator<< (std::ostream &out, const Matrix &A)
@@ -197,6 +202,8 @@ std::ostream& operator<< (std::ostream &out, const Matrix &A)
     }
     out << "\n";    return(out);
 }
+
+int Matrix::countcallF = 0;
 
 int main()
 {
@@ -219,5 +226,6 @@ int main()
 
     cout << "Применение функции F для RegMatrix - Сумма всех элементов матрицы C:\n" << C.F() << "\n";
     cout << "Применение функции F для Scalar - Скалярный квадрат суммы I + J:\n" << (J + I).F() << "\n";
+    cout << "Количество вызовов функции F, выражающееся статической переменной countcall F:\n" << Matrix::countcallF << "\n";
     return(0);
 }
