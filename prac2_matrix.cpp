@@ -184,14 +184,7 @@ public:
     } 
 
     int F () 
-    {
-        int i;  int sum=0;   
-        for (i=0; i<_len; i++)
-        {
-            sum += _A[i][0] * _A[i][0];
-        }
-        return(sum);
-    } 
+    {    return((*this)*(*this));   } 
 };
 
 std::ostream& operator<< (std::ostream &out, const Matrix &A)
