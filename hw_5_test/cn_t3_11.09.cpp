@@ -6,9 +6,9 @@ using namespace std;
 class M {
     int *obj_;
     int num_;
+    static int count;
 
 public:
-    static int count;
 
     M(int n) {obj_ = new int;   *obj_ = n; count++;   num_=count;}
     M() {obj_ = new int;    count++;   num_=count;}
