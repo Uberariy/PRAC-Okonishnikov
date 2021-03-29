@@ -4,41 +4,63 @@
 using namespace std;
 // NOT FINISHED!!!
 
+class QueueEmpty {};
 class IntQueue {
     struct list
     {
         int num;
         struct list *next;
-    } *L;
-    struct list *start;
-    struct list *end;
-    int size;
+    } *L_;
+    struct list *end_;
+    int size_;
 
 public:
 
-    struct list *listadd (struct list *L, int A)
+    void FreeQueue (struct list *L)
     {
-        if (L == NULL) 
+        if (L!=NULL)
         {
-            L = (list *) new list;
-            L -> num = A;
-            end = L;
+            FreeQueue(L -> next);
+            delete L;
         }
-        else L -> next  = listadd(L -> next, A);
     }
-
-    void operator<<= (int A) 
+    IntQueue()
+    {   
+        L_ = NULL;
+        size_ = 0;    
+    }
+    ~IntQueue()
     {
-        L = listadd(L, A);
+        FreeQueue(L_);
     }
-    int operator>>= (int & A) 
+    IntQueue& operator<<= (int A) 
     {
-
+        size_++;
+        list *tmp = new list;
+        tmp -> num = A;
+        tmp -> next = NULL;
+        if (L_ == NULL) L_ = tmp;
+        end_ = tmp;
+        return(*this);
+    }    
+    void operator>>= (int & A) 
+    {
+        if (!size_) throw QueueEmpty();
+        size_--;
+        A = L_ -> num;
+        struct list *tmp_ = L_ -> next;
+        delete L_;
+        L_ = tmp_;
     }
-    int Amount () {return size;}
+    int Amount () {return size_;}
 };
 
 int main() 
-{
+{   
+    IntQueue Q;
+    Q<<=10; Q<<=20; Q<<=30;
+    cout << Q.Amount() << "\n";
+    int a;  Q>>=a;
+    cout << a << "\n" << Q.Amount() << "\n";
     return 0;
 }
