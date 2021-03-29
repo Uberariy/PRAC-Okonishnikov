@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 using namespace std;
+// NOT FINISHED!!!
 
 class IntQueue {
     struct list
