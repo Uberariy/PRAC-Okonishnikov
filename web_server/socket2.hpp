@@ -27,26 +27,26 @@ struct SocketAddress {
 
     SocketAddress ()
     {
-        if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
+        if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
             throw Error("socket");
     }
     SocketAddress (int IP_addr, short port) 
     {
-        if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
+        if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
             throw Error("socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
-        _sock_addr.sin_port = htons(port);
+        _sock_addr.sin_port = port;
         _sock_addr.sin_addr.s_addr = IP_addr; 
-        // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)      
+        // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)   
     }
     SocketAddress (const char * IP_addr, short port)
     {
-        if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
+        if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
             throw Error("socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
-        _sock_addr.sin_port = htons(port);
+        _sock_addr.sin_port = port;
         _sock_addr.sin_addr.s_addr = inet_addr(IP_addr); 
         // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)      
     }
@@ -67,7 +67,7 @@ public:
 class ServerSocket : public Socket {
 public:
     ServerSocket(int IP_addr, short port) : Socket(IP_addr, port)
-    {cout << IP_addr;  cout << _myaddr._sock_addr.sin_addr.s_addr;}
+    {cout << _myaddr._sd;}
     int _Listen(int queue)
     {
         int res = listen(_myaddr._sd, queue);
@@ -76,7 +76,7 @@ public:
         return(res);
     }
     int _Bind()
-    {   //cout << _myaddr._sock_addr.sin_port;
+    {   cout << _myaddr._sd;
         int res = bind(_myaddr._sd, (struct sockaddr *) &_myaddr._sock_addr, _myaddr.GetAddrlen());
         if (res < 0)
             throw Error("Bind");
