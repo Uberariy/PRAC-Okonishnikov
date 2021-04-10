@@ -1,5 +1,5 @@
-#ifndef socket
-#define socket
+#ifndef socket2
+#define socket2
 
 #include <cmath>
 #include <cstring>
@@ -21,19 +21,20 @@ public:
     string GetErr() { return(_error_type); }
 };
 
-struct SocketAddress {
+class SocketAddress {
+public:
     int _sd;
     struct sockaddr_in _sock_addr;
 
     SocketAddress ()
     {
         if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
-            throw Error("socket");
+            throw Error("Socket");
     }
     SocketAddress (int IP_addr, short port) 
     {
         if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
-            throw Error("socket");
+            throw Error("Socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
         _sock_addr.sin_port = port;
@@ -43,7 +44,7 @@ struct SocketAddress {
     SocketAddress (const char * IP_addr, short port)
     {
         if ((_sd = socket (AF_INET, SOCK_STREAM, 0)) < 0) 
-            throw Error("socket");
+            throw Error("Socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
         _sock_addr.sin_port = port;
@@ -60,14 +61,14 @@ protected:
     SocketAddress _myaddr;
 public:
     Socket() : _myaddr() {}
-    Socket(int IP_addr, short port) : _myaddr(IP_addr, port) {}  // Добавить конструктор с const char *
+    Socket(int IP_addr, short port) : _myaddr(IP_addr, port) {} 
     Socket(const char * IP_addr, short port) : _myaddr(IP_addr, port) {}
 };
 
 class ServerSocket : public Socket {
 public:
     ServerSocket(int IP_addr, short port) : Socket(IP_addr, port)
-    {cout << _myaddr._sd;}
+    {}
     int _Listen(int queue)
     {
         int res = listen(_myaddr._sd, queue);
@@ -76,7 +77,7 @@ public:
         return(res);
     }
     int _Bind()
-    {   cout << _myaddr._sd;
+    {   //cout << _myaddr._sd << " " << _myaddr._sock_addr.sin_addr.s_addr << " " << _myaddr._sock_addr.sin_family << " " << _myaddr._sock_addr.sin_port << "\n";
         int res = bind(_myaddr._sd, (struct sockaddr *) &_myaddr._sock_addr, _myaddr.GetAddrlen());
         if (res < 0)
             throw Error("Bind");
@@ -113,6 +114,15 @@ public:
         int size = tmp.size() * sizeof(tmp);
         send(ServAddr._sd, &size, sizeof(int), 0);
         send(ServAddr._sd, tmp.data(), tmp.size(), 0);
+        cout << "|" << str << "|";
+    }
+    int _Shutdown()
+    {
+        int res = shutdown(_myaddr._sd, 2);
+        if (res < 0)
+            throw Error("Shutdown");
+        close(_myaddr._sd);
+        return(res);    
     }
 };
 
@@ -139,5 +149,3 @@ public:
 };
 
 #endif
-
-// \r\n - разделители строк в хедерах
