@@ -10,7 +10,7 @@
 #include "socket2.hpp"
 using namespace std;
 
-#define DEFAULTPORT 3666
+#define DEFAULTPORT 1234
 int port;
 
 class Server {
@@ -18,8 +18,9 @@ class Server {
     int _accept_err;
     int _queue;
     int _exit;
+    int _next;
 public:
-    Server (int port, int queue) : _Serv(htonl(INADDR_LOOPBACK), port), _queue(queue), _accept_err(0), _exit(0)
+    Server (int port, int queue) : _Serv(htonl(INADDR_LOOPBACK), port), _queue(queue), _accept_err(0), _exit(0), _next(0)
     {
         try { _Serv._Bind();    _Serv._Listen(_queue); } 
         catch(Error E) {
@@ -31,15 +32,21 @@ public:
     void ProcessConnection(int clientsd, SocketAddress & Client)
     {
         ConnectedSocket cs(clientsd);
-        string line = cs._Read(0);
-        if (line == "Disconnect") 
+        for(;;)
         {
-            cerr << "Server: Client Disconected!\n";
-        }
-        if (line == "Close")
-        {
-            cerr << "Server: Server Closed!\n";\
-            _exit = 1;
+            string line = cs._Read(0);
+            cout << line;
+            if (line == "Disconnect") 
+            {
+                cerr << "Server: Client Disconected!\n";
+                _next = 1;
+            }
+            if (line == "Close")
+            {
+                cerr << "Server: Server Closed!\n";\
+                _exit = 1;
+            }
+            if(_exit || _next) { cs._Shutdown(); break; }
         }
     }
 
@@ -48,21 +55,21 @@ public:
         for(;;)
         {
             SocketAddress Client;
-            int clientsd;
-            if (clientsd = _Serv._Accept(Client)) {
-                cerr << "Server: Accept Error!\n";
-                _accept_err++;
+            int clientsd = _Serv._Accept(Client);
+            if (clientsd < 0) {
                 if (_accept_err == 1)
                 {
-                    cerr << "Server: Accept Error is Fatal!\n";
+                    cerr << "Server: Accept Error is Fatal! (happened twice)\n";
                     exit(3);
                 }
-                else
+                else    // if zero
                 {
-                    cerr << "Server: Accept Error is Tolerated!\n";
+                    cerr << "Server: Accept Error is Tolerated! (happened once)\n";
+                    _accept_err++;
+                    continue;
                 }
-            };
-            _accept_err = 0;
+            }
+            else _accept_err = 0;
             cout << "Server: Client " << clientsd << " connected!\n";
             ProcessConnection(clientsd, Client);
             if (_exit) break;
