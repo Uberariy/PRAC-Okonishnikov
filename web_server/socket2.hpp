@@ -114,7 +114,7 @@ public:
         int size = tmp.size() * sizeof(tmp);
         send(ServAddr._sd, &size, sizeof(int), 0);
         send(ServAddr._sd, tmp.data(), tmp.size(), 0);
-        cout << "|" << str << "|";
+        //cout << "|" << str << "|";
     }
     int _Shutdown()
     {
