@@ -30,19 +30,21 @@ struct SocketAddress {
         if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
             throw Error("socket");
     }
-    SocketAddress (uint32_t IP_addr, short port) 
+    SocketAddress (int IP_addr, short port) 
     {
         if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
             throw Error("socket");
+        memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
         _sock_addr.sin_port = htons(port);
-        _sock_addr.sin_addr.s_addr = htonl(IP_addr); 
+        _sock_addr.sin_addr.s_addr = IP_addr; 
         // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)      
     }
     SocketAddress (const char * IP_addr, short port)
     {
         if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
             throw Error("socket");
+        memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
         _sock_addr.sin_port = htons(port);
         _sock_addr.sin_addr.s_addr = inet_addr(IP_addr); 
@@ -50,6 +52,7 @@ struct SocketAddress {
     }
     int GetAddrlen() { return(sizeof(_sock_addr)) ;}
     int GetSd() { return(_sd); }
+    ~SocketAddress() { close(_sd); }
 };
 
 class Socket {
@@ -57,15 +60,14 @@ protected:
     SocketAddress _myaddr;
 public:
     Socket() : _myaddr() {}
-    Socket(uint32_t IP_addr, short port) : _myaddr(IP_addr, port) {}  // Добавить конструктор с const char *
+    Socket(int IP_addr, short port) : _myaddr(IP_addr, port) {}  // Добавить конструктор с const char *
     Socket(const char * IP_addr, short port) : _myaddr(IP_addr, port) {}
-    ~Socket() { close(_myaddr._sd); }
 };
 
 class ServerSocket : public Socket {
 public:
-    ServerSocket(uint32_t IP_addr, short port) : Socket(IP_addr, port)
-    {}
+    ServerSocket(int IP_addr, short port) : Socket(IP_addr, port)
+    {cout << IP_addr;  cout << _myaddr._sock_addr.sin_addr.s_addr;}
     int _Listen(int queue)
     {
         int res = listen(_myaddr._sd, queue);
@@ -74,7 +76,7 @@ public:
         return(res);
     }
     int _Bind()
-    {
+    {   //cout << _myaddr._sock_addr.sin_port;
         int res = bind(_myaddr._sd, (struct sockaddr *) &_myaddr._sock_addr, _myaddr.GetAddrlen());
         if (res < 0)
             throw Error("Bind");
@@ -92,7 +94,7 @@ public:
 class ConnectedSocket : public Socket {
 public:
     ConnectedSocket() : Socket() {}
-    ConnectedSocket(uint32_t IP_addr, short port) : Socket(IP_addr, port)
+    ConnectedSocket(int IP_addr, short port) : Socket(IP_addr, port)
     {}
     ConnectedSocket(int sd) : Socket() { _myaddr._sd = sd; }
     string _Read(int flags)
@@ -102,19 +104,22 @@ public:
         vector<char> tmp;
         tmp.resize((int) (size / sizeof(std::vector<char>)));
         recv(_myaddr._sd, &tmp[0], size, flags);
-        string res(tmp.begin(), tmp.end());
-        return(res);
+        string str(tmp.begin(), tmp.end());
+        return(str);
     }
-    void _Write(int flags)
+    void _Write(SocketAddress& ServAddr, string str, int flags)
     {
-
+        std::vector<char> tmp(str.begin(), str.end());
+        int size = tmp.size() * sizeof(tmp);
+        send(ServAddr._sd, &size, sizeof(int), 0);
+        send(ServAddr._sd, tmp.data(), tmp.size(), 0);
     }
 };
 
 class ClientSocket : public ConnectedSocket {
 public:
     ClientSocket() : ConnectedSocket() {}
-    ClientSocket(uint32_t IP_addr, short port) : ConnectedSocket(IP_addr, port)
+    ClientSocket(int IP_addr, short port) : ConnectedSocket(IP_addr, port)
     {}
     int _Connect(SocketAddress& ServAddr)  // This func. is used by a client.
     {
