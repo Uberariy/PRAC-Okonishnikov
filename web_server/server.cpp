@@ -19,7 +19,7 @@ class Server {
     int _queue;
     int _exit;
 public:
-    Server (int port, int queue) : _Serv(htonl(INADDR_ANY), port), _queue(queue), _accept_err(0), _exit(0)
+    Server (int port, int queue) : _Serv(htonl(INADDR_LOOPBACK), port), _queue(queue), _accept_err(0), _exit(0)
     {
         try { _Serv._Bind();    _Serv._Listen(_queue); } 
         catch(Error E) {
