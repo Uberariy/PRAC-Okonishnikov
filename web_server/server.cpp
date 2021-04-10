@@ -35,7 +35,7 @@ public:
         for(;;)
         {
             string line = cs._Read(0);
-            cout << line;
+            //cout << line;
             if (line == "Disconnect") 
             {
                 cerr << "Server: Client Disconected!\n";
