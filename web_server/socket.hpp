@@ -29,7 +29,7 @@ public:
         if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
             throw Error("socket");
     }
-    Socket(uint32_t IP_addr, short port)
+    Socket(uint32_t IP_addr, short port)    // Добавить конструктор с const char *
     {
         if (_sd = socket (AF_INET, SOCK_STREAM, 0) < 0) 
             throw Error("socket");
@@ -75,6 +75,7 @@ public:
     ConnectedSocket() : Socket() {}
     ConnectedSocket(uint32_t IP_addr, short port) : Socket(IP_addr, port)
     {}
+        // Add read and write;
     int _Accept(int serv)   // This func. is used by a server.
     {
         socklen_t pointlen = GetAddrlen();
@@ -89,4 +90,14 @@ public:
     // Add read and write;
 };
 
+class HttpHeader {
+    string _name;
+    string _value;
+public:
+    HttpHeader (const string &n, const string &v) : _name(n), _value(v) {}
+    explicit HttpHeader(const string& line) {}
+};
+
 #endif
+
+// \r\n - разделители строк в хедерах
