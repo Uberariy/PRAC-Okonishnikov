@@ -17,8 +17,9 @@ class Server {
     ServerSocket _Serv;
     int _accept_err;
     int _queue;
+    int _exit;
 public:
-    Server (int port, int queue) : _Serv(INADDR_LOOPBACK, port), _queue(queue), _accept_err(0)
+    Server (int port, int queue) : _Serv(htonl(INADDR_ANY), port), _queue(queue), _accept_err(0), _exit(0)
     {
         try { _Serv._Bind();    _Serv._Listen(_queue); } 
         catch(Error E) {
@@ -30,7 +31,16 @@ public:
     void ProcessConnection(int clientsd, SocketAddress & Client)
     {
         ConnectedSocket cs(clientsd);
-        string request = cs._Read(0);
+        string line = cs._Read(0);
+        if (line == "Disconnect") 
+        {
+            cerr << "Server: Client Disconected!\n";
+        }
+        if (line == "Close")
+        {
+            cerr << "Server: Server Closed!\n";\
+            _exit = 1;
+        }
     }
 
     void Run ()
@@ -49,12 +59,13 @@ public:
                 }
                 else
                 {
-                    cerr << "Server: Accept Error Tolerated!\n";
+                    cerr << "Server: Accept Error is Tolerated!\n";
                 }
             };
             _accept_err = 0;
             cout << "Server: Client " << clientsd << " connected!\n";
             ProcessConnection(clientsd, Client);
+            if (_exit) break;
         }
     }
 
