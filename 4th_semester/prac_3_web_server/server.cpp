@@ -2,12 +2,14 @@
 #include <cstring>
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "socket2.hpp"
+#include "http.hpp"
 using namespace std;
 
 #define DEFAULTPORT 1234
@@ -20,7 +22,7 @@ class Server {
     int _exit;
     int _next;
 public:
-    Server (int port, int queue) : _Serv(htonl(INADDR_LOOPBACK), port), _queue(queue), _accept_err(0), _exit(0), _next(0)
+    Server (int port, int queue) : _Serv(htonl(INADDR_ANY), port), _queue(queue), _accept_err(0), _exit(0), _next(0)
     {
         try { _Serv._Bind();    _Serv._Listen(_queue); } 
         catch(Error E) {
@@ -35,17 +37,25 @@ public:
         for(;;)
         {
             string line = cs._Read(0);
-            //cout << line;
+            //cout << "|" << line << "|";
             if (line == "Disconnect") 
             {
                 cerr << "Server: Client Disconected!\n";
                 _next = 1;
             }
-            if (line == "Close")
+            else if (line == "Close")
             {
                 cerr << "Server: Server Closed!\n";\
                 _exit = 1;
             }
+            else if (!line.empty())
+            {
+                HttpRequest prekl(line);    
+                cout << prekl;
+                HttpResponse lol(prekl, cs); 
+                _next = 1;
+            }
+            line.clear();
             if(_exit || _next) { cs._Shutdown(); break; }
         }
     }
