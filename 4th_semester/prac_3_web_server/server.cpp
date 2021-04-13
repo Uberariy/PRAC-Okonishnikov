@@ -52,8 +52,8 @@ public:
             {
                 HttpRequest prekl(line);    
                 cout << prekl;
-                HttpResponse lol(prekl, cs); 
-                _next = 1;
+                HttpResponse lol(prekl, cs);
+                _next = 1; 
             }
             line.clear();
             if(_exit || _next) { cs._Shutdown(); break; }
