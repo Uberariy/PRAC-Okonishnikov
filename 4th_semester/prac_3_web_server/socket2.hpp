@@ -12,7 +12,14 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <ctime>
+#include <stack>
 using namespace std;
+
+#define BUFLEN 2048
 
 class Error {
     string _error_type;
@@ -37,7 +44,7 @@ public:
             throw Error("Socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
-        _sock_addr.sin_port = port;
+        _sock_addr.sin_port = htons(port);
         _sock_addr.sin_addr.s_addr = IP_addr; 
         // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)   
     }
@@ -47,7 +54,7 @@ public:
             throw Error("Socket");
         memset(&_sock_addr, 0, sizeof(_sock_addr));
         _sock_addr.sin_family = AF_INET;
-        _sock_addr.sin_port = port;
+        _sock_addr.sin_port = htons(port);
         _sock_addr.sin_addr.s_addr = inet_addr(IP_addr); 
         // INADDR_LOOPBACK (127.0.0.1) or INADDR_ANY (0.0.0.0) or INADDR_BROADCAST (255.255.255.255)      
     }
@@ -100,6 +107,13 @@ public:
     ConnectedSocket(int sd) : Socket() { _myaddr._sd = sd; }
     string _Read(int flags)
     {
+        char chstr[BUFLEN];
+        int size = recv(_myaddr._sd, chstr, BUFLEN, flags); 
+        string str(chstr);
+        return(str);
+    }
+    string _Read_old(int flags)
+    {
         int size = 0;
         recv(_myaddr._sd, &size, sizeof(int), 0);
         vector<char> tmp;
@@ -108,12 +122,26 @@ public:
         string str(tmp.begin(), tmp.end());
         return(str);
     }
-    void _Write(SocketAddress& ServAddr, string str, int flags)
+ //   void _Write(HttpHeader Header, int flags)
+ //   {
+ //       vector<char> tmp(Header._name.begin(), Header._name.end());
+ //       send(_myaddr._sd, tmp.data(), tmp.size(), flags);
+ //       send(_myaddr._sd, ":", 1, flags);
+ //       vector<char> tmp(Header._value.begin(), Header._value.end());
+ //       send(_myaddr._sd, tmp.data(), tmp.size(), flags);
+ //       send(_myaddr._sd, "\n", 1, flags);
+ //   } 
+    void _Write(string str, int flags)
     {
-        std::vector<char> tmp(str.begin(), str.end());
+        vector<char> tmp(str.begin(), str.end());
+        send(_myaddr._sd, tmp.data(), tmp.size(), flags);
+    }
+    void _Write_old(SocketAddress& ServAddr, string str, int flags)
+    {
+        vector<char> tmp(str.begin(), str.end());
         int size = tmp.size() * sizeof(tmp);
-        send(ServAddr._sd, &size, sizeof(int), 0);
-        send(ServAddr._sd, tmp.data(), tmp.size(), 0);
+        send(ServAddr._sd, &size, sizeof(int), flags);
+        send(ServAddr._sd, tmp.data(), tmp.size(), flags);
         //cout << "|" << str << "|";
     }
     int _Shutdown()
@@ -138,14 +166,6 @@ public:
             throw Error("Connect");
         return(res);       
     }    
-};
-
-class HttpHeader {
-    string _name;
-    string _value;
-public:
-    HttpHeader (const string &n, const string &v) : _name(n), _value(v) {}
-    explicit HttpHeader(const string& line) {}
 };
 
 #endif
