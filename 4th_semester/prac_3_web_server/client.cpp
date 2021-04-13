@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "socket2.hpp"
+#include "http.hpp"
 using namespace std;
 
 #define DEFAULTPORT 1234
@@ -34,8 +35,8 @@ public:
         for(;;)
         {
             std::getline(std::cin, line);   //cout << "|" << line << "|";
-            _Client._Write(_Serv, line, 0);
-            _Client._Write(_Serv, "\r\n", 0);
+            _Client._Write_old(_Serv, line, 0);
+            //_Client._Write(_Serv, "\r\n", 0);
             if (line == "Disconnect") 
             {
                 cout << "Client: Client Disconected\n";
