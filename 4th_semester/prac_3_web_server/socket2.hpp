@@ -131,6 +131,10 @@ public:
  //       send(_myaddr._sd, tmp.data(), tmp.size(), flags);
  //       send(_myaddr._sd, "\n", 1, flags);
  //   } 
+    void _Write(char * str, int len, int flags)
+    {
+        send(_myaddr._sd, str, len, flags);
+    }
     void _Write(string str, int flags)
     {
         vector<char> tmp(str.begin(), str.end());
