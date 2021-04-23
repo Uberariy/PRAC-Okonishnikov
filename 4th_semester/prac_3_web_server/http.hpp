@@ -155,6 +155,11 @@ public:
                     fd = open("tmp.txt", O_RDONLY);
                     _code = "200 Okay";
                 }
+                else 
+                {
+                    fd = open("index/404.html", O_RDONLY);
+                    _code = "404 NotFound";
+                }
             }
             else if (pid == 0)
             {
