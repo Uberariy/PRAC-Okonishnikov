@@ -88,7 +88,7 @@ public:
 
 };
 
-
+int HttpRequest::_numb = 0;
 int main(int argc, char **argv)
 {
     if(argc == 2) port = atoi(argv[1]);
