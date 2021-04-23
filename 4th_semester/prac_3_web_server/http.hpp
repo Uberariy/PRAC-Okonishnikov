@@ -13,12 +13,20 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <errno.h>
 #include "socket2.hpp"
 using namespace std;
 
-#define BUFSIZE 128
+#define BUFSIZE         8192
+#define REQUEST         "REQUEST="
+#define SERVER_ADDR     "SERVER_ADDR=127.0.0.1"
+#define CONTENT_TYPE    "CONTENT_TYPE=text/plain"
+#define SERVER_PROTOCOL "SERVER_PROTOCOL=HTTP/1.1"
+#define SCRIPT_NAME     "SCRIPT_NAME="
+#define SERVER_PORT     "SERVER_PORT=1234"
+#define QUERY_STRING    "QUERY_STRING="
 
 class HttpHeader {
     string _name;
@@ -45,15 +53,20 @@ public:
 };
 
 class HttpRequest {
+    string _fullrequest;
     string _method;
     string _uri_way;
     string _uri_par;
     string _version;
     string _body;
+    int _cgi;
 
 public:
+    static int _numb;
     HttpRequest(string request) 
     {
+        _numb++;
+        string _fullrequest = request;
         string str = request;
         int pos = str.find(" ");
         _method = str.substr(0, pos);
@@ -64,14 +77,16 @@ public:
             int pos2 = uri.find("?");
             if (pos2 != -1)
             {
-                _uri_way = uri.substr(1, pos2);
+                _uri_way = uri.substr(0, pos2);
                 uri.erase(0, pos2+1);
                 _uri_par = uri;
+                _cgi = 1;
             }
             else 
             {   
                 _uri_way = uri.substr(0, uri.size()-1);
                 _uri_par = " ";
+                _cgi = 0;
             }
         str.erase(0, pos+1);
         pos = str.find("/");
@@ -83,12 +98,39 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, HttpRequest &r); 
     friend class HttpResponse;
+    friend char** NewEnv(HttpRequest & request);
 };
 
 std::ostream &operator<<(std::ostream &out, HttpRequest &r)
 {
-    out << "method: \t" << r._method << "\nuri_way: \t" << r._uri_way << "\nuri_par: \t" << r._uri_par << "\nversion: \t" << r._version << "\n\n";
+    out << "[" << r._numb << "]\nmethod: \t" << r._method << "\nuri_way: \t" << r._uri_way << "\nuri_par: \t" 
+        << r._uri_par << "\nversion: \t" << r._version << "\niscgi?: \t" << r._cgi << "\n\n";
     return out;
+}
+
+char** NewEnv(HttpRequest & request)
+{
+    char ** env = new char*[8];
+    env[0] = new char [request._fullrequest.size()];
+    env[1] = new char[22]; //SERVER_ADDR
+    env[2] = new char[17]; //SERVER_PORT
+    env[3] = new char[24]; //CONTENT_TYPE
+    env[4] = new char[25]; //SERVER_PROTOCOL
+    env[5] = new char[13 + request._uri_way.size()]; //SCRIPT_NAME
+    env[6] = new char[14 + request._uri_par.size()]; //QUERY_STRING
+    env[7] = NULL;
+
+    env[0] = (char *) request._fullrequest.c_str();
+    env[1] = (char *) SERVER_ADDR;
+    env[2] = (char *) SERVER_PORT;
+    env[3] = (char *) CONTENT_TYPE;
+    env[4] = (char *) SERVER_PROTOCOL;
+    strcpy(env[5], SCRIPT_NAME);            
+    strcat(env[5], request._uri_way.c_str());
+    strcpy(env[6], QUERY_STRING);           
+    strcat(env[6], request._uri_par.c_str());
+
+    return env;
 }
 
 class HttpResponse {
@@ -99,17 +141,50 @@ class HttpResponse {
 
 public:
     HttpResponse(HttpRequest & request, ConnectedSocket & cs) :  _headers(""), _code(""), _body("")
-    {   
-        //cout << "|" << request._uri_way.c_str() << "|";
-        int fd = open(request._uri_way.c_str(), O_RDONLY);
-        if (fd == -1) 
-        {   
-            if (errno == EACCES)
-                _code = "403 NotAccessable";
-            else 
-                _code = "404 NotFound";
+    {
+        int fd;
+        if (request._cgi)   // CGI
+        {
+            pid_t pid;
+            if ((pid = fork()) > 0)
+            {
+                int stat;
+                wait(&stat);
+                if (!(WIFEXITED(stat) && WEXITSTATUS(stat)))
+                {
+                    fd = open("tmp.txt", O_RDONLY);
+                    _code = "200 Okay";
+                }
+            }
+            else if (pid == 0)
+            {
+                fd = open("tmp.txt", O_WRONLY|O_TRUNC|O_CREAT, 0777);
+                if (fd < 0) { perror("tmp.txt"); exit(1); }
+                dup2(fd, 1);
+                close(fd);
+                char * argv[] = { (char*)request._uri_way.c_str(), NULL };
+                char ** env = NewEnv(request);
+                execvpe(request._uri_way.c_str(), argv, env);
+                perror("execve");
+                exit(2);
+            }
         }
-        else _code = "200 Okay";
+        else // NOT CGI
+        {
+            //cout << "|" << request._uri_way.c_str() << "|";
+            fd = open(request._uri_way.c_str(), O_RDONLY);
+            if (fd == -1) 
+            {   
+                if (errno == EACCES)
+                    _code = "403 NotAccessable";
+                else 
+                {
+                    fd = open("index/404.html", O_RDONLY);
+                    _code = "404 NotFound";
+                }
+            }
+            else _code = "200 Okay";
+        }
 
         if ((request._method != "HEAD") && (request._method != "GET"))
         {
@@ -117,11 +192,10 @@ public:
             HttpHeader H_Allow("Allow", "GET, HEAD");
             _headers += H_Allow.Return() + "\n\n";
         }
-        _answer = "HTTP/1.1 " + _code + "\n\n";
-        _answer += "Code: " + _code + "\n";
+        _answer = "HTTP/1.1 " + _code + "\r\n";
 
         HttpHeader H_Server("Server", "Model HTTP Uberariy");
-        _headers += H_Server.Return() + "\n";
+        _headers += H_Server.Return() + "\r\n";
 
         time_t timer = time(nullptr);
         HttpHeader H_Date("Date", (string)asctime(localtime(&timer)));
@@ -135,8 +209,8 @@ public:
             lseek(fd, 0, 0);
         }
         HttpHeader H_ContentLength("Content-Length", to_string(len));
-        _headers += H_ContentLength.Return() + "\n";
-        _answer += _headers + "\n";
+        _headers += H_ContentLength.Return() + "\r\n";
+        _answer += _headers + "\r\n";
 
         cout << _answer;
         cs._Write(_answer, 0);
@@ -157,7 +231,8 @@ public:
 //GET / HTTP/1.1
 //GET /cgi-bin/testcgi?name=igor&surname=golovin&mail=igolovin HTTP/1.1
 
-//http://127.0.0.1:1234
-//http://127.0.0.1:1234/cgi-bin/testcgi?name=igor&surname=golovin&mail=igolovin
+//http://127.0.0.1:1234/index/200.html
+//http://127.0.0.1:1234/index/404.html
+//http://127.0.0.1:1234/index/cgi-bin/cgi?name=igor&surname=golovin&mail=igolovin
 
 #endif
