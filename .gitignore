@@ -1,1 +1,7 @@
 *.Identifier
+
+# CPP code running files
+*tempCodeRunnerFile.cpp
+*tempCodeRunnerFile.hpp
+
+

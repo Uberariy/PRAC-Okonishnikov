@@ -16,6 +16,7 @@
 #
 <p align="center"><img width=60% src="spqr3D.png"></p>
 
+#
 ### For those, who are interested in **Discord administration**, you should check out my demonstratively designed russian server made for Gaming and History spec. 
 
 
