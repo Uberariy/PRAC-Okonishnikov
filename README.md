@@ -14,8 +14,9 @@
 ### This is my repository oriented on learning and practicing programming skills in C, C++, Python3 and others. For any proposals, desires or provocations you may contact me on Discord media directly -> **Uberariy#7078** or elsewhere (maybe).
 
 #
-<p align="center"><img width=30% src="spqr3D.png"></p>
-### For those, who are interested in Discord administration, you should check out my demonstratively designed russian server made for Gaming and History spec. 
+<p align="center"><img width=60% src="spqr3D.png"></p>
+
+### For those, who are interested in **Discord administration**, you should check out my demonstratively designed russian server made for Gaming and History spec. 
 
 
 - PS: For **non-russian speakers**: Press **Putin** in order to get the channels access!!
