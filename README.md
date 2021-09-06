@@ -1,4 +1,4 @@
-<p align="center"><img width=30% src="msu.png"></p>
+<p align="center"><img width=30% src="msu3D.png"></p>
 
 <p align="center">
     <img src="https://img.shields.io/github/languages/count/Uberariy/PRAC-Okonishnikov"> 
@@ -14,7 +14,7 @@
 ### This is my repository oriented on learning and practicing programming skills in C, C++, Python3 and others. For any proposals, desires or provocations you may contact me on Discord media directly -> **Uberariy#7078** or elsewhere (maybe).
 
 #
-<p align="center"><img width=30% src="spqr.png"></p>
+<p align="center"><img width=30% src="spqr3D.png"></p>
 ### For those, who are interested in Discord administration, you should check out my demonstratively designed russian server made for Gaming and History spec. 
 
 
