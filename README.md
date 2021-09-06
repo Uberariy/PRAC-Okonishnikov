@@ -10,8 +10,8 @@
 
 
 #
-## **Lomonosov Moscow State University** - Faculty of Computational Mathematics and Cybernetics
-### This is my repository oriented on learning and practicing programming skills in C, C++, Python3 and others. For any proposals, desires or provocations you may contact me on Discord media directly -> **Uberariy#7078** or elsewhere (maybe).
+### **Lomonosov Moscow State University** - Faculty of Computational Mathematics and Cybernetics
+ This is my repository oriented on learning and practicing programming skills in C, C++, Python3 and others. For any proposals, desires or provocations you may contact me on Discord media directly -> **Uberariy#7078** or elsewhere (maybe).
 
 #
 <p align="center"><img width=60% src="spqr3D.png"></p>
