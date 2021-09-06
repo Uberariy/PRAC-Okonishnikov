@@ -1,0 +1,130 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+3)   LEA EAX, y
+     PUSH EAX
+     MOV EAX, x
+     ADD EAX, 2
+     PUSH EAX
+     CALL P
+
+4)   LEA EAX, x
+     PUSH EAX
+     PUSH x
+     CALL P
+
+№2.
+
+11.2.1 б) 
+
+MOV AX, word ptr [EBP + 8]
+
+11.2.2 a), в) 
+
+а)
+MOV EBX, [EBP + 8]
+MOV AL, byte ptr [EBX]
+
+б)
+MOV EBX, [EBP + 8]
+MOV EAX, [EBX]
+
+№3.
+A DB 500 DUP (?) ; числа со знаком 
+B DD ?
+
+SUM PROC
+	; procedure SUM(var X: byte, N: integer, var S: dword)
+	PUSH EBP
+	MOV EBP, ESP
+
+	PUSH EAX
+	PUSH EBX
+	PUSH ECX
+
+	MOV EBX, [EBP+8]
+	MOV ECX, [EBP+12]
+	XOR EAX, EAX
+Cycle:	MOVSX EDX, byte ptr [EBX]
+	ADD EAX, EDX
+	INC EBX
+	LOOP Cycle
+	MOV EBX, [EBP+16]
+	MOV [EBX], EAX
+	
+	POP ECX
+	POP EBX
+	POP EAX
+
+	POP EBP
+	RET 12
+SUM ENDP
+
+--- SUM(A,500,B):
+
+	LEA EAX, B
+ 	PUSH EAX
+	PUSH 500
+	LEA EAX, A
+	PUSH EAX
+	CALL SUM
+
+№4.
+
+procedure revseq;
+var c: integer;
+begin
+    read(c);
+    if c<>0 then begin revseq; writeln(c); end
+end;
+
+----- ПОЛНАЯ ПРОГРАММА:
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+.stack 4096
+
+.DATA
+
+PrA  DB 'Program begins:',0
+PrB  DB 'Program ends.',0
+
+.CODE
+
+REVSEQ PROC
+	; procedure revseq
+	PUSH EBP
+	MOV EBP, ESP
+
+	PUSH EAX
+
+	ININT EAX
+	CMP EAX, 0
+	JE Fin
+	CALL REVSEQ
+	OUTI EAX
+Fin:	NEWLINE
+
+	POP EAX
+
+	POP EBP
+	RET 0
+REVSEQ ENDP
+
+start: 
+	OUTSTR offset PrA
+	NEWLINE
+
+        CALL REVSEQ
+
+	OUTSTR offset PrB
+	NEWLINE
+        EXIT
+END start
+
+
+
+
+
+

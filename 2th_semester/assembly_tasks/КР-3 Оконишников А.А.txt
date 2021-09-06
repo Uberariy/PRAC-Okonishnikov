@@ -1,0 +1,171 @@
+Оконишников Арий Ариевич:
+
+№1.
+
+XCHG [ESP+4], EAX
+XCHG EAX, [ESP+12]
+XCHG [ESP+4], EAX
+
+№2.
+
+MIN PROC
+	;function MIN(var z: mas; n: dword): word; 
+	PUSH EBP
+	MOV EBP, ESP
+
+	PUSH EBX
+	PUSH ECX
+
+	MOV ECX, [EBP+12]
+	MOV EBX, EBP+8
+	MOV AX, 7FFFh
+Cycle:	CMP AX, word ptr [EBX]
+	JLE Next
+	MOV AX, word ptr [EBX]
+Next:	ADD EBX, 2
+	LOOP Cycle
+
+	POP ECX
+	POP EBX
+
+	POP EBP
+	RET 8
+MIN ENDP
+
+№3.
+
+;time RECORD H:4,M:6,S:6
+
+PrintMin PROC
+	PUSH EBP
+	MOV EBP, ESP
+
+	PUSH EAX
+
+	MOVZX AX, word ptr [EBP+8]
+	AND EAX, 111111000000b	;не использую mask, так как time имеет размер 2 байта
+	SHR EAX, 6
+	OUTU EAX
+
+	POP EAX
+
+	POP EBP
+	RET 4
+PrintMin ENDP
+
+№4.
+
+N=300 
+T DB N DUP (?)
+
+	MOV ECX, N
+	CLD
+	MOV EDI, offset T
+	MOV AL, '!'
+	REPNE SCASB
+	JNE Zero
+	REPNE SCASB
+	JNE Zero
+	OUTCHAR '1'
+	JMP Fin
+Zero:	OUTCHAR '0'
+Fin:	
+
+№5.
+
+PrB MACRO v1,v2,v3,v4,v5,v6
+PUSH EAX
+	FOR V, <v1,v2,v3,v4,v5,v6>
+		IF type V EQ byte
+			MOVZX EAX, V
+			OUTU EAX
+		ENDIF
+	ENDM
+POP EAX
+ENDM
+
+----------------
+
+A DB 3 
+X DW 5 
+Q DD 6
+
+----------------
+
+1) 
+PUSH EAX
+POP EAX
+
+----------------
+
+2)
+PUSH EAX
+MOVZX EAX, A
+OUTU EAX
+MOVZX EAX, A
+OUTU EAX
+POP EAX
+
+№6.
+
+MA MACRO K,L 
+	LOCAL M
+	IFDIF <K+3>,<L>
+		A&L DB 'LL&L&'
+	ENDIF 
+	M DW K&L 
+ENDM
+
+---------------- 1 этап:
+
+	IFDIF <2+3>,<8>
+		A&L DB 'LL&L&' 
+	ENDIF
+	??0000 DW 28
+
+---------------- 2 этап:
+
+		A8 DB 'LL8'
+	??0000 DW 28
+
+№7.
+
+---------------- M1:
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+EXTERN L: NEAR
+
+.CODE
+start:
+	ININT EAX
+	JMP L
+end start
+
+---------------- M2:
+
+INCLUDE settings.inc
+
+PUBLIC L
+EXTERN M: NEAR
+
+.CODE
+L:
+	MOV ECX, 2
+	DIV ECX
+	JMP M
+END 
+
+---------------- M3:
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+PUBLIC M
+
+.CODE
+M:
+	OUTU EAX
+EXIT
+END 

@@ -1,0 +1,171 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+a) offset V + EBX + disp B = 2 + 0 + 2 = 4
+b) offset V + EBX + offset TSTR.B = 2 + 0 + 2 = 4
+c) offset V + EBX + disp C = 2 + 0 + 6 = 8
+d) offset V + EBX + 6 = 2 + 0 + 6 = 8
+
+№2.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=25
+STUD STRUC
+   Gr DB ?
+   Nm DB 20 DUP(' '),0
+   Sn DB 20 DUP(' '),0
+  Age DB ?
+STUD ENDS
+X STUD N DUP (<>)
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, length X
+	MOV EBX, 0
+Cycle:	LEA EAX, (X[EBX]).Sn
+	OUTSTR EAX
+	OUTCHAR ' '
+	LEA EAX, (X[EBX]).Nm
+	OUTSTR EAX
+	NEWLINE
+	ADD EBX, type X
+	LOOP Cycle
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№3.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+TIME STRUC ; время какого–то момента суток 
+H DB ? ; час (от 0 до 23) 
+M DB ? ; минута (от 0 до 59) 
+S DB ? ; секунда (от 0 до 59) 
+TIME ENDS 
+T1 TIME <17,25,0> 
+T2 TIME <>
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV AX,	word ptr T1	
+	MOV word ptr T2, AX
+	MOV AL, T1.S
+	MOV T2.S, AL
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+             
+№4. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+TIME STRUC ; время какого–то момента суток 
+H DB ? ; час (от 0 до 23) 
+M DB ? ; минута (от 0 до 59) 
+S DB ? ; секунда (от 0 до 59) 
+TIME ENDS 
+T1 TIME <17,25,0> 
+T2 TIME <17,25,1>
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV AL, 0FFh
+	MOV BL,	T1.H	
+	CMP T2.H, BL
+	JA Fin
+	JB False
+	MOV BL,	T1.M	
+	CMP T2.M, BL
+	JA Fin
+	JB False
+	MOV BL,	T1.S	
+	CMP T2.S, BL
+	JA Fin
+False:	MOV AL, 0
+Fin:	NEWLINE	
+	MOVZX EAX, AL
+	OUTU EAX
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+     
+№5. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=40
+STUD STRUC
+   FAM DB 20 DUP('5'),0
+   NAM DB 20 DUP('3'),0
+   AGE DB ?
+   MARKS DB 4 DUP (?)
+STUD ENDS
+P STUD <>
+GR STUD N DUP (<,,19>)
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, length GR
+	MOV EBX, size P
+	SUB EBX, type P
+Cycle:	CMP (P[EBX]).AGE,18
+	JB Prev
+	LEA EAX, (P[EBX]).FAM
+	OUTSTR EAX
+	OUTCHAR ' '
+	LEA EAX, (P[EBX]).NAM
+	OUTSTR EAX
+	JMP Fin
+Prev:	SUB EBX, type P
+	LOOP Cycle
+Fin: 	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+
+
+

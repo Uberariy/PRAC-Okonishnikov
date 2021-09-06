@@ -1,0 +1,187 @@
+Оконишников Арий Ариевич:
+
+Здравствуйте, в 1 задаче семинара говориться о печате номера самой правой единицы, хотя задача печатает номер самой левой, так, например для числа 257 программа выводит "8".
+
+№1. 
+
+Печать самой левой единицы, если считаем, что младший разряд имеет номер 0, а знаковый - 31:
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EDX, EAX
+	MOV ECX, 32
+Cycle:	SHR EDX, 1
+	JC Writ
+	LOOP Cycle
+	JMP Fin
+Writ:	DEC ECX
+	XOR ECX,31
+	OUTU ECX
+Fin:	NEWLINE
+	
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+№2.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	XOR EAX,EAX
+	XOR EBX,EBX
+	INCHAR BL
+
+Cycle:	SHL EAX, 3
+	SUB BL,'0'
+	ADD EAX, EBX
+	INCHAR BL
+	CMP BL,' '
+	JNE Cycle
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№3.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, 10
+Cycle:	ROL EAX, 3
+	MOV BL, 111b
+	AND BL, AL
+	ADD BL, '0'
+	OUTCHAR BL
+	LOOP Cycle
+
+	ROL EAX, 2
+	MOV BL, 11b
+	AND BL, AL
+	ADD BL, '0'
+	OUTCHAR BL	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+               
+№4. 
+
+width R1 = 3, width A = 1, width L = 2;
+mask R1 = 7h, mask A = 4h, mask B = 3h;
+значение поля А: 0, значение поля B: 3;
+    
+№5. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+time RECORD h:4=0, m:6=0, s:6=0
+T time <>
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	XOR EAX,EAX
+	XOR EDX,EDX
+
+	MOV DX, T
+	MOV AX, DX
+	AND AX, mask h
+	SHR AX, 12
+	OUTU EAX
+	OUTCHAR ':'
+
+	MOV AX, DX
+	AND AX, mask m
+	SHR AX, 6
+	OUTU EAX
+	OUTCHAR ':'
+
+	MOV AX, DX
+	AND AX, mask s
+	OUTU EAX
+	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+   
+№6.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+N = 70
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+time RECORD h:4=0, m:6=0, s:6=0
+T time N DUP (<>)
+maxm time <>
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV DX, 0
+	MOV ECX, N
+Cycle:	MOV AX, T[2*ECX - 2]
+	AND AX, mask m
+	CMP AX, DX
+	JBE Cont
+	MOV DX, AX
+	MOV BX, T[2*ECX - 2]
+Cont:	LOOP Cycle
+	MOV maxm, BX
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+   
+

@@ -1,0 +1,70 @@
+Оконишников Арий Ариевич:
+
+№1.
+
+MOV AL, 110 
+ADD AL, 30 
+JL Lab
+
+АL получает значение 140>128 => перехода по JL не будет.
+
+№2.
+
+MOV AL, 200 
+MOVSX EAX, AL 
+OUTI EAX
+
+200 в EAX имеет представление:
+
+1111. ... .1111.1100.1000
+
+Это отрицательное число, находящееся в дополнительном коде, переведем его в "понятное" представление, используя алгоритм:
+
+1) вычтем 1: 1111. ... .1111.1100.0111
+2) инверсия: 0000. ... .0000.0011.1000 <-> -|8+16+32|=-56
+
+Ответ: OUTI EAX выведет -56
+
+№3.
+	MOV ESI, 7
+	XOR EAX, EAX
+	XOR EBX, EBX
+	INCHAR BL
+Cycle:	SUB BL, '0'
+	MUL ESI
+	ADD EAX, EBX
+	INCHAR BL
+	CMP BL, ' '
+	JNE Cycle
+
+№4.
+	MOV EAX, -1
+	MOV ECX, N
+	XOR EBX, EBX
+Cycle:	MOV AL, Y[EBX]
+	SUB X[EBX*4], EAX
+	INC EBX
+	LOOP Cycle
+
+№5.
+	MOV ECX, m
+	XOR EBX, EBX
+Fori:	PUSH ECX
+	XOR EDX, EDX ; Счетчик элементов
+	MOV ECX, n
+Forj:	CMP A[4*EBX],0
+	JE Cont
+	INC EDX
+Cont:	INC EBX
+	LOOP Forj
+	OUTU EDX
+	NEWLINE
+	POP ECX
+	LOOP Fori
+
+№6.
+	MOV ECX, len
+	XOR EBX, EBX
+Cycle:	SHL N[ECX-1], 1
+	ADC N[ECX], 1
+	LOOP Cycle

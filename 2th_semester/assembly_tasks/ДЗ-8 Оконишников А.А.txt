@@ -1,0 +1,158 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+ININT EAX
+AND EAX, 80000000h
+OUTU EAX
+
+№2.
+
+a)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=3000 
+X DQ N DUP (?) 
+K DB ?
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, N
+	MOV AL, 1
+Cycle:	AND AL, X[ECX*type X-8]
+	LOOP Cycle
+	MOV K,AL
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+б)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=3000 
+X DQ N DUP (?) 
+K DB ?
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, N
+	MOV AL, 0
+Cycle:	OR AL, X[ECX*type X-8]
+	LOOP Cycle
+	AND AL, 1
+	MOV K,AL
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start   
+     
+№3.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EBX, 0
+	MOV ECX, 16	
+Cycle:	ROL BX, 1
+	ROR AX, 1
+	ADC BX, 0
+	LOOP Cycle
+	
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+                
+№4. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, 32
+Cycle:	MOV EDX, '0'
+	ROL EAX, 1
+	ADC EDX, 0
+	OUTCHAR DL
+	LOOP Cycle
+	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+      
+№5. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+X DD ?
+Y DD ?
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EBX, 0
+	MOV EAX, X	
+	SHL EAX, 2
+	ADD EBX, EAX
+	SHR EAX, 5
+	SUB EBX, EAX
+	SHL EAX, 3
+	AND EAX, 15
+	ADD EBX, EAX
+	MOV Y, EAX
+	
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+   
+
+
+

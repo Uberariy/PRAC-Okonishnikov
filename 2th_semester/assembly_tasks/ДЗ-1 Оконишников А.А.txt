@@ -1,0 +1,46 @@
+Оконишников Арий Ариевич:
+
+№1. 4.2
+
+MOV BL,'0'
+SUB BH,BL
+
+№2. 4.3
+
+MOV BL,'0'
+ADD BH,BL
+
+№3. 4.4
+
+а) -56
+б) 246
+
+№4. 4.5
+
+NOP
+
+№4. 4.5
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+ 
+.STACK 4096
+
+.DATA
+FStr DB 'Program begins work.',0         
+LStr DB 'Program ends work.',0
+
+.CODE
+start: OUTSTR offset FStr
+       NEWLINE
+
+       INCHAR BL
+       NEWLINE
+       MOVZX EBX,BL
+       OUTU EBX
+
+       OUTSTR offset LStr
+       NEWLINE      
+      EXIT
+END start
+       

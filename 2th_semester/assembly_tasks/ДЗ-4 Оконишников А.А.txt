@@ -1,0 +1,152 @@
+Оконишников Арий Ариевич:
+
+№1. 5.4 (в,г)
+
+в)
+L:	ADD EAX,EAX
+	DEC EBX 
+	JE M 
+	JMP L
+M:
+
+г)
+L:	ADD EAX,EAX
+	LOOP L
+
+№2. 5.20 (б)
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+	
+	MOV ESI,10
+	MOV ECX,40
+	MOV EBX,0		
+CYCLE:		ININT EAX
+		MOV EDX,0
+		DIV ESI
+		CMP EDX,0
+		JNE FIN
+			ADD EBX,1
+FIN:	LOOP CYCLE
+	OUTU EBX
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+№3. 5.19 (г)
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N DD 1453650
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EAX,N
+	MOV ECX,0
+	MOV EBX,10
+CYCLE:		MOV EDX,0
+		DIV EBX	
+		CMP EDX,0
+		JE ADDD
+		CMP EDX,5
+		JNE CONT	
+ADDD:		ADD CL,1
+CONT:	CMP EAX,0
+	JNE CYCLE
+	OUTU ECX
+	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+ 
+№4. 5.34 (б)
+   
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N DD 0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX,5
+	MOV EBX,0FFFFFFFFh	
+CYCLE:		ININT EAX
+		CMP EAX,EBX
+		JLE CONT
+			MOV EBX,EAX
+CONT:	LOOP CYCLE
+	OUTI EBX	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+№5. 5.34 (б)
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ESI,6
+	MOV EAX,0			
+CYCLE:		INCHAR BL
+		CMP BL,' '
+			JE FIN
+		MUL ESI
+		SUB BL,'0'
+		MOVZX EBX,BL
+		ADD EAX,EBX
+		JMP CYCLE
+FIN:	OUTU EAX
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+       
+       
+
+
+
+
+

@@ -1,0 +1,178 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+X DD ?
+
+a) 
+SUB ESP, 4
+MOV EAX, X
+MOV [ESP], EAX
+
+б)
+MOV EAX, [ESP]
+MOV X, EAX
+ADD ESP, 4
+
+№2.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+.stack 4096
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+n=?;
+m=?;
+X DD m DUP (n DUP (1))
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, m
+	MOV EBX, n
+	MOV EDX, size X
+Cyc:	PUSH ECX
+	SUB EDX, type X
+	MOV ECX, EBX
+	MOV EAX, X[EDX+ECX*4]
+	DEC ECX
+Cycin:	CMP X[EDX+ECX*4], EAX
+	JB Cont
+	MOV EAX, X[EDX+ECX*4]
+Cont:	LOOP Cycin
+	OUTI EAX
+	NEWLINE
+	POP ECX
+	LOOP Cyc	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+      
+№3.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+.stack 4096
+
+.DATA
+
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	XOR ECX, ECX
+	INCHAR AL
+Cycle:	CMP AL, '.'
+	JE Prnt
+	INC ECX
+	PUSH EAX
+	INCHAR AL
+	JMP Cycle
+Prnt:	POP EAX
+	OUTCHAR AL
+	LOOP Prnt
+	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+            
+№4. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+.stack 4096
+
+.DATA
+
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	PUSH EBP
+	PUSH ECX
+	MOV EBP, ESP
+	MOV ECX, 40
+	ADD EBP, 4
+Cycle:	ROR, dword ptr [EBP]
+	JNC Next
+	MOV dword ptr [EBP], 1
+Next:	ROL dword ptr [EBP]
+	ADD EBP, 4
+	LOOP Cycle
+	POP ECX
+	POP EBP
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+   
+№5. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+.stack 4096
+
+.DATA
+
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+Yes   DB 'Yes.',0
+No    DB 'No.',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	INCHAR AL
+Cycle: 	CMP AL, '('
+	JE ContOp
+	CMP AL, ')'
+	JE ContClS
+	CMP AL, '['
+	JE ContOp
+	CMP AL, ']'
+	JE ContClQ
+	OUTSTR offset Yes
+	JMP Fin
+ContOp:	PUSH EAX
+	JMP Next
+ContClS: POP EBX
+	 CMP BL, '('
+	 JE Next
+	 JMP Non
+ContClQ: POP EBX
+	 CMP BL, '['
+	 JNE Non 
+Next:	INCHAR AL
+	LOOP Cycle
+Non:	OUTSTR offset No
+Fin:	NEWLINE
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+   
+

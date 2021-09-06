@@ -1,0 +1,89 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+а)
+FOR d, <1,2,3,4,5,6>
+	ADD EAX, d
+ENDM
+
+б)
+FORC d, <123456>
+	ADD EAX, d
+ENDM
+
+№2.
+
+FORC c, <ABCDEF>
+	IF type c EQ byte
+		MOV c, -1
+	ENDIF
+ENDM
+
+№3.
+
+Неправилен вариант а), т.к в строке CMP TYPE X,byte один из операндов должен быть регистром. Из правильных в) - лучший вариант, т.к объем программы меньше, сама программа проще, а также не нужно применять LOCAL из-за меток.
+
+№4.
+
+MAX MACRO X
+	MOV AL, X
+	MOV ECX, length X
+	REPEAT length X
+		IF X[ECX] GT AL
+			MOV AL, X[ECX]
+		ENDIF
+		DEC ECX
+	ENDM	
+ENDM
+
+№5.
+
+в)
+CALL MACRO P
+	MOV EAX, EIP
+	ADD EAX, 4
+	PUSH EAX
+	JMP P PROC
+ENDM
+
+д)
+LOOP MACRO L
+	DEC ECX
+	JNE L
+ENDM
+
+№6.
+
+NULL MACRO RS
+	FOR r, RS
+		XOR r, r
+	ENDM
+ENDM
+
+--- МАКРОРАСШИРЕНИЕ  NULL <AL,BX,SI>:	
+XOR AL, AL
+XOR BX, BX
+XOR SI, SI
+
+--- МАКРОРАСШИРЕНИЕ  NULL <>:
+
+№7.
+
+NULL MACRO r1,r2,r3,r4,r5,r6,r7,r8
+	IFNB <r1>
+		XOR r1,r1
+		NULL r2,r3,r4,r5,r6,r7,r8
+	ENDIF
+ENDM
+
+ 
+--- МАКРОРАСШИРЕНИЕ  NULL ESI:	
+XOR ESI, ESI
+
+--- МАКРОРАСШИРЕНИЕ  NULL EAX, EBX, ECX, EDX:
+XOR EAX, EAX
+XOR EBX, EBX
+XOR ECX, ECX
+XOR EDX, EDX
+

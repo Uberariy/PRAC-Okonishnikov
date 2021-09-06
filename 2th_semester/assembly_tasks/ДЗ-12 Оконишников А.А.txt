@@ -1,0 +1,112 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+a)  
+    LEA EAX, AB 
+    PUSH EAX
+    JMP P
+AB: 
+
+б)  
+    POP EAX
+    JMP EAX
+
+№2. а)
+
+3)  MOV EAX, X
+    ADD EAX, 2
+    LEA EAX, Y
+    CALL P
+
+4)  MOV EAX, X
+    LEA EAX, X
+    CALL P
+
+№3.
+
+а) Фрагмент:
+d DB ?
+
+.CODE
+
+NextDig PROC
+	PUSH EBX
+	MOV BL, byte ptr [EAX]
+	CMP BL,'9'
+	JE Nine
+	INC BL
+	JMP Fin
+Nine:	MOV BL,'0'
+Fin:	MOV byte ptr [EAX], BL
+	POP EBX
+	RET	
+NextDig ENDP
+
+start: 
+        OUTSTR offset PrN
+        INCHAR d
+	NEWLINE
+
+	LEA EAX, [d]
+
+	CALL NextDig
+	OUTCHAR d
+	NEWLINE
+
+	CALL NextDig
+	OUTCHAR d
+	NEWLINE
+
+        EXIT
+END start
+
+б)
+d DB ?
+
+.CODE
+
+NextDig PROC
+	CMP BL,'9'
+	JE Nine
+	INC BL
+	JMP Fin
+Nine:	MOV BL,'0'
+Fin:	RET	
+NextDig ENDP
+
+start: 
+        OUTSTR offset PrN
+        INCHAR d
+	NEWLINE
+
+	XOR EBX, EBX
+	MOV BL, d
+
+	CALL NextDig
+	OUTCHAR BL
+	NEWLINE
+
+	CALL NextDig
+	OUTCHAR BL
+	NEWLINE
+
+        EXIT
+END start
+
+№4.
+
+PrLd PROC
+	;AX = n
+	;BX = p
+	PUSH EAX
+	PUSH EBX
+	MOVZX EAX, AX
+	XOR EDX,EDX
+	DIV BX
+	OUTU EDX
+	POP EBX
+	POP EAX
+	RET	
+PrLd ENDP
+

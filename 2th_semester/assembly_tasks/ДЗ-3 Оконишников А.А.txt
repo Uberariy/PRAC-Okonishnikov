@@ -1,0 +1,89 @@
+Оконишников Арий Ариевич:
+
+№1.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+L26 DB 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',0
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	ININT EAX
+	ADD EAX, offset L26
+	SUB EAX, 1
+	OUTSTR EAX
+	NEWLINE	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№2. 5.1.
+
+a) Прямой
+б) Косвенный; Неверная: Переменные или регистры должны быть двойными словами.
+в) Косвенный; Неверная: Переменные или регистры должны быть двойными словами.
+г) Косвенный
+д) Косвенный
+е) Прямой
+ж) Косвенный; Команда зациклится, т.к. будет каждый раз переходить на счетчик адреса, т.е на себя.
+з) Косвенный; Неверная: В косвенных переходах недопустим операнд константы.
+
+№3.
+
+Символ 'Б' расположен после символов кода 128, поэтому после знакового перехода JL, не переходим по нему и получаем результат Greater, со вторым блоком же программа работает исправно, т.к. кода 'Б' и 'F' имеют один знак, как числа со знаком в байтовом представлении. 
+Чтобы исправить программу требуется заменить знаковые переходы на беззнаковые:
+JL -> JB
+
+№4. 5.5.
+
+a)	CMP ESI, 20
+	JLE zero
+	MOV AL, 1
+	JMP cont
+zero:	MOV AL, 0
+cont: 	NEWLINE
+
+б)	MOV AL, 0
+	CMP ESI, 20
+	JLE cont
+	MOV AL, 1
+cont:	NEWLINE
+
+№5.
+
+	MOV CL,1
+	MOV AX,X
+	MOV BL,2
+	DIV BL
+	CMP AH,0
+	JE cont
+	MOV AX,X
+	MOV BL,3
+	DIV BL
+	CMP AH,0
+	JE cont
+	MOV AX,X
+	MOV BL,5
+	DIV BL
+	CMP AH,0
+	JE cont
+	MOV CL,0
+cont:	NEWLINE
+
+
+
+
+
+
+
+

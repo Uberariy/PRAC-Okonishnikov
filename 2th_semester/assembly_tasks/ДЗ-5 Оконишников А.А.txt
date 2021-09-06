@@ -1,0 +1,185 @@
+Оконишников Арий Ариевич:
+
+№1. 6.5 (а)
+
+offset X = 0	type X = 1	length = 75	size = 75
+offset Y = 76	type X = 2	length = 25	size = 50
+offset Y = 126	type X = 4	length = 50	size = 200
+
+№2. 6.1
+
+г) Неверно: А.В не может состоять из вычитания адреса.
+д) Неверно: Имя переменной адресного выражения не может быть регистром.
+и) Неверно: База/Индекс регистра может быть только размера 32.
+к) Неверно: Перед константным выражением должен быть знак.
+о) А.В: 1004h
+п) Неверно: ESP не может быть индексом регистра.
+у) Неверно: База у А.В должна быть без модификатора.
+ф) А.В: 1006h
+
+№3. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=30 
+A DB N DUP (1) ; A[0..N–1] 
+X DD N DUP (2) ; X[0..N–1] 
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EAX,0
+	MOV ECX,N
+CycleA:	OUTI EAX
+	OUTCHAR ' '
+	MOVSX EBX, byte ptr A[EAX]
+	OUTI EBX
+	NEWLINE
+	INC EAX
+	LOOP CycleA
+	
+	MOV EAX,0
+	MOV ECX,N
+CycleX:	OUTI EAX
+	OUTCHAR ' '
+	OUTI X[4*EAX]
+	NEWLINE
+	INC EAX
+	LOOP CycleX
+
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+№4.
+
+a)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+N=30 
+X DB N DUP (5) ; A[0..N–1] 
+
+.CODE
+start: 
+	MOVZX EBX, X [size X - type X]
+	OUTU EBX
+      EXIT
+
+END start
+       
+б)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+N=30 
+X DB N DUP (5) ; A[0..N–1] 
+
+.CODE
+start: 
+	MOVSX EBX, X [size X - type X]
+	OUTI EBX
+      EXIT
+
+END start
+  
+
+№5. 6.9 (б)
+
+1)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=100 
+X DB N DUP (?) ; X[0..N–1] 
+Y DW N DUP (?) ; Y[0..N–1] 
+Z DD N DUP (?) ; Z[0..N–1]
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EBX,0
+	MOV EDX,0
+	MOV ESI,0
+	MOV ECX,N
+Cycle:	CMP X[EBX], BL
+	JLE Next1
+	INC AL
+Next1:	CMP Y[EDX], BX
+	JLE Next2
+	INC AH
+Next2:	CMP Z[ESI], EBX
+	JLE Next3
+	INC DL
+Next3:	ADD EBX,type X
+	ADD EDX,type Y
+	ADD ESI,type Z
+	LOOP Cycle
+	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+2)
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+N=100 
+X DB N DUP (?) ; X[0..N–1] 
+Y DW N DUP (?) ; Y[0..N–1] 
+Z DD N DUP (?) ; Z[0..N–1]
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV EBX,0
+	MOV ECX,N
+Cycle:	CMP X[EBX], BL
+	JLE Next1
+	INC AL
+Next1:	CMP Y[EBX*2], BX
+	JLE Next2
+	INC AH
+Next2:	CMP Z[EBX*4], EBX
+	JLE Next3
+	INC DL
+Next3:	INC EBX
+	LOOP Cycle
+	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+       
+
+
+
+
+

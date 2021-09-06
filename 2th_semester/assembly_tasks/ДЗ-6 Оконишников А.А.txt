@@ -1,0 +1,175 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+start:
+MOV X[K*type X],0
+MOV Z[K*type Z],0	
+EXIT
+END start
+
+№2.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+D DB '9'-'0'+1 DUP (0)
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, '9'-'0'+1
+	MOV EBX, '0'
+Cycle:	CMP D[EBX-'0'], 0
+	JNE Cont
+	OUTCHAR BL
+	NEWLINE
+Cont:	INC BL
+	LOOP Cycle	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№3. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+L=31
+A DW L DUP (?) ; числа со знаком 
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, L
+	MOV EBX, 0
+Cycle:	CMP A[EBX], 1
+	JNE Yes
+	ADD EBX, type A
+	LOOP Cycle
+	JMP Fin
+Yes:	NEG A[EBX]
+Fin:
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№4. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+L=31
+A DW L DUP (?) ; числа со знаком 
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, L
+Cycle:	CMP A[ECX*(type A)]-type A, 0
+	JG Yes
+	LOOP Cycle
+	JMP Fin
+Yes:	MOV A[ECX*(type A)],0FFFFh
+Fin:	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+№5. 
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+Non DB 'не ',0
+Sym DB 'симметричен',0
+N=100
+X DD N DUP (?) ; числа со знаком 
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, size X - type X
+	MOV EBX, 0
+Cycle:	MOV EDX, X[EBX]
+	CMP EDX, X[ECX]
+	JNE No
+	ADD EBX, type X
+	SUB ECX, type X
+	CMP ECX, EBX
+	JB Cycle
+	JMP Cont
+No:	OUTSTR offset Non
+Cont:	OUTSTR offset Sym
+	NEWLINE
+	
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+
+№6.
+
+INCLUDE settings.inc
+INCLUDE io2020.inc
+
+.DATA
+FStr  DB 'Program starts.',0
+LStr  DB 'Program ends.',0
+M = 10
+N = 15 
+B DD M DUP(N DUP(?))
+
+.CODE
+start:
+      OUTSTR offset FStr 
+      NEWLINE
+
+	MOV ECX, M
+	MOV EBX, (N-1)*(type B)
+Cycle:	OUTI B[EBX], 0
+	NEWLINE
+	ADD EBX, N*(type B)
+	LOOP Cycle	
+
+      OUTSTR offset LStr 
+      NEWLINE   
+      EXIT
+
+END start
+       
+       
+
+
+
+

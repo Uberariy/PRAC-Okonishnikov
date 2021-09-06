@@ -1,0 +1,64 @@
+Оконишников Арий Ариевич:
+
+№1.
+
+a.asm(15) : Переменная А не описана в .DATA
+a.asm(16) : EAX и B разного размера
+a.asm(18) : Второй операнд у ADD не может быть immediate
+a.asm(19) : Первым операндом у MOVZX может быть лишь регистр
+a.asm(20) : Первым операндом у SUB может быть регистр или память
+a.asm(21) : Память | Память у команды XCHG недопустима, один из операндов должен быть регистром
+
+№2. 3.28 (и, к, л, м)
+
+Ошибки:
+и) CBW - безоперандовая команда
+л) У DIV не может быть операнд типа immediate
+м) Операндом DEC может быть только память или регистр
+
+№3. 3.18 (д, е, ж, з)
+
+д) 1) MOVZX EAX,B
+   2) MOVSX EAX,B
+e) 1) MOV EAX,C
+      CDQ
+   2) MOV EAX,C
+      MOV EDX,0FFFFFFFFh
+ж) 1) MOVZX EAX,B
+      CDQ
+   2) MOVSX EAX,B
+      MOV EDX,0FFFFFFFFh
+ж) 1) MOVZX EAX,C
+      CDQ
+   2) MOVSX EAX,C
+      MOV EDX,0FFFFFFFFh
+
+№4. 3.19
+
+A DD ? ; число со знаком 
+B DD ? 
+Вычислить:B=(A div 1000)*(A mod 1000)
+
+MOV EAX,A
+MOV EDX,0
+MOV EBX,1000
+IDIV EBX
+IMUL DX
+MOV WORD PTR B,AX
+MOV WORD PTR B+2,DX
+
+№5. 3.27
+
+SUB D1,'0'
+SUB D2,'0'
+SUB D3,'0'
+MOV AL,100
+MUL D1
+ADD N,AX
+MOV AL,10
+MUL D2
+ADD N,AX
+MOVZX AX,D3
+ADD N,AX
+
+

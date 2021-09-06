@@ -1,0 +1,132 @@
+Оконишников Арий Ариевич:
+
+№1. 
+
+a)
+ECX = 2
+BL  = 'd'
+ZF  = 0
+
+б)
+ECX = 1
+BL  = 'a'
+ZF  = 1
+
+б)
+ECX = 0
+BL  = Символ с номером 0
+ZF  = 1
+
+б)
+ECX = 0
+BL  = Символ с номером 0
+ZF  = 0
+
+№2. 
+N = 300 
+S DB N DUP (?)
+
+.CODE
+start: 
+
+	INCHAR AL
+	MOV ECX, N
+	CLD 
+	LEA EDI, S
+	REP STOSB
+
+        EXIT
+END start
+
+№3.
+N = 200 
+X DD N DUP (?)
+
+.CODE
+start: 
+
+	MOV ECX, N
+	CLD 
+	MOV EDI, offset X
+	MOV ESI, ESP
+	REP MOVSD
+
+        EXIT
+END start
+
+№4.
+N EQU 100 
+S DB N DUP (?) ; S[0..N–1] of char 
+
+.CODE
+start: 
+
+	MOV ECX, N
+	MOV AL, ' '
+	STD 
+	MOV EDI, offset S + N-1
+	REPE SCASB  
+	NEG ECX
+	ADD ECX, N-1
+	CLD
+
+        EXIT
+END start
+
+№5.
+N = 50 
+X DD N DUP (?)   ; X[1..N] 
+
+.CODE
+start: 
+
+	MOV ECX, N
+	MOV EAX, 100
+	CLD 
+	MOV EDI, offset X
+	REPNE SCASD
+	CMP ECX, 0
+	JE Equal
+	NEG ECX
+	ADD ECX, N
+	JMP Fin
+Equal:	DEC ECX
+Fin:	OUTI ECX
+	NEWLINE
+
+        EXIT
+END start
+
+№6.
+
+---------- ПРОЦЕДУРА:
+
+COPY PROC
+	;procedure COPY(var X,Y: dword, N: integer)
+	PUSH EBP
+	MOV EBP, ESP
+
+	PUSH ECX
+	PUSH ESI
+	PUSH EDI
+
+	CLD
+	MOV ESI, [EBP+8]
+	MOV EDI, [EBP+12]
+	MOV ECX, [EBP+16]
+	REP MOVSD
+
+	POP EDI
+	POP ESI
+	POP ECX
+	
+	POP EBP
+	RET 12
+COPY ENDP
+
+----------- ВЫЗОВ COPY(A,B,20):
+
+	PUSH 20
+	PUSH offset B
+	PUSH offset A
+	CALL COPY
