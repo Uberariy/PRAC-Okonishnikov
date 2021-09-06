@@ -1,4 +1,4 @@
-<p align="center"><img width=30% src="msu3D.png"></p>
+<p align="center"><img width=60% src="msu3D.png"></p>
 
 <p align="center">
     <img src="https://img.shields.io/github/languages/count/Uberariy/PRAC-Okonishnikov"> 
