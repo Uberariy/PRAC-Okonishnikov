@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <stdio.h>
+#include <time.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -11,13 +12,6 @@ using namespace std;
 
 int main()
 {
-    if (fork() == 0)
-    {
-        
-    }
-    else
-    {
-
-    }
-    return 0;
+        time_t timer = time(nullptr);
+        cout << (string)asctime(localtime(&timer));
 }

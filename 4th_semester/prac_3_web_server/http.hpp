@@ -109,7 +109,7 @@ std::ostream &operator<<(std::ostream &out, HttpRequest &r)
 }
 
 char** NewEnv(HttpRequest & request)
-{
+{   // Сделать, чтобы брал текущий env  и изменял
     char ** env = new char*[8];
     env[0] = new char [request._fullrequest.size()];
     env[1] = new char[22]; //SERVER_ADDR
@@ -150,15 +150,15 @@ public:
             {
                 int stat;
                 wait(&stat);
-                if (!(WIFEXITED(stat) && WEXITSTATUS(stat)))
+                if (WIFEXITED(stat) && WEXITSTATUS(stat) == 0)
                 {
                     fd = open("tmp.txt", O_RDONLY);
                     _code = "200 Okay";
                 }
                 else 
                 {
-                    fd = open("index/404.html", O_RDONLY);
-                    _code = "404 NotFound";
+                    fd = open("index/503.html", O_RDONLY);
+                    _code = "503 Server Unavailable";
                 }
             }
             else if (pid == 0)
