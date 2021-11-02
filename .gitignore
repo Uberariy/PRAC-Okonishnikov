@@ -6,4 +6,6 @@
 *.o
 *.exe
 
+# They ruin language statistics!!!
+*.ipybn
 
