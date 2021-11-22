@@ -7,5 +7,5 @@
 *.exe
 
 # They ruin language statistics!!!
-*.ipybn
+*.ipynb
 
