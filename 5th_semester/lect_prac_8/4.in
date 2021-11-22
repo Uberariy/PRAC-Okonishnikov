@@ -1,0 +1,7 @@
+a, b, c = Sausage(), Sausage("HAM", "5/6"), Sausage("SPAM.", 1.25)
+print(a, b, c, sep='\n')
+print(a + b + c, abs(a + b + c))
+print(b * 2, 4 * c / 5, sep="\n")
+d, e = 2 * b + a / 3 - 25 * c / 16, a - c
+print(d, not d, abs(d))
+print(e, not e, abs(e))

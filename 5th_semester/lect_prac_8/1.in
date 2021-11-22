@@ -1,0 +1,6 @@
+a = WeAre()
+print(a.count)
+b, c = WeAre(), WeAre(),
+print(a.count, b.count, c.count)
+del b   
+print(a.count)

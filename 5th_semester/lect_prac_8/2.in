@@ -1,0 +1,7 @@
+tri = Triangle(3, 4, 5), Triangle(5, 4, 3), Triangle(7, 1, 1), Triangle(5, 5, 5), Triangle(7, 4, 4)
+for a, b in zip(tri[:-1], tri[1:]):
+    print(a if a else b)
+    print(f"{a}={abs(a):.2f} {b}={abs(b):.2f}")
+    print(a == b)
+    print(a >= b)
+    print(a < b)
