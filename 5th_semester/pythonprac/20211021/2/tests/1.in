@@ -1,0 +1,7 @@
+:sin x y 2*(x+y)
+sin 1 2
+:const 1000
+const
+:cos x y z u tan(x+y+z+u)
+cos 1 2 3 4
+quit "fun:{}strokaz:{}"

@@ -1,0 +1,3 @@
+a = OrderedComplex(1, 2)
+b = OrderedComplex(2, 3)
+print(a < b, OrderedComplexMul(10, 15)@OrderedComplexMul(10, 15))

@@ -1,0 +1,13 @@
+try:
+    alq = AlphaQ(b=42, aaa=40000)
+except AttributeError as E:
+    print(type(E))
+else:
+    print(alq)
+try:
+    alq = Alpha(b=22, aaa=20000)
+except AttributeError as E:
+    print(type(E))
+else:
+    print(alq)
+

@@ -1,0 +1,8 @@
+@objcount
+class C:
+    pass
+
+c, d, e = C(), C(), C()
+print(C.counter)
+c = 100500
+print(C.counter)

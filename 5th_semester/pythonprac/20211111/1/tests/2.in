@@ -1,0 +1,2 @@
+A = OrderedComplexMul(1, 100)
+print(A@A)

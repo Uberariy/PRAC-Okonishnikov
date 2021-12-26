@@ -1,0 +1,5 @@
+__init__: (10,), {}
+add: (9,), {}
+29
+__str__: (), {}
+Fake str convertion

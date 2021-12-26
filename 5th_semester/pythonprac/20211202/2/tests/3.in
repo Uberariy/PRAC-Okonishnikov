@@ -1,0 +1,13 @@
+class C(metaclass=check):
+    A: list
+    B: list
+    C: list
+
+c = C()
+print(c.check_annotations())
+c.A = ['ds']
+print(c.check_annotations())
+c.B = ['ds']
+print(c.check_annotations())
+c.C = ['ds']
+print(c.check_annotations())

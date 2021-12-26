@@ -1,0 +1,12 @@
+class Cd:
+		num = Num()
+
+print(Cd().num)
+c, d = Cd(), Cd()
+c.num = d.num = 20
+print(c.num+d.num)
+c.num = ""
+print(c.num+d.num)
+d.num = range(10, 10000, 19)
+print(c.num+d.num)
+

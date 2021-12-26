@@ -1,0 +1,7 @@
+:cos x 10*x
+cos 0.5
+cos 1
+cos 1.5
+cos 2
+cos 2.5
+quit "{}:uuu{}"

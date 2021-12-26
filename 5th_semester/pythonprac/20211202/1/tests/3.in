@@ -1,0 +1,15 @@
+class U(metaclass=dump):
+    countt = 0
+    def __init__(self, val):
+        self.val = val
+
+    for i in "áûë òåêñò íà ðóññêîì â êîäèðîâêå":
+        def i(self, *bruh, **kwargs):
+            self.countt += 1
+            return str(self.countt)
+    def add(self, other, another=None):
+        return self.val + other + (another or self.val)
+
+c = U(10)
+for i in "áûë òåêñò íà ðóññêîì â êîäèðîâêå"*17:
+    print(c.i(*[j for j in "áûë òåêñò íà ðóññêîì â êîäèðîâêå"[::4] if j != i], i="nice"))

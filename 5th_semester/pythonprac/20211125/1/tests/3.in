@@ -1,0 +1,29 @@
+@objcount
+class A(str):
+    pass
+
+c, d, e = A(), A(), A()
+print(A.counter)
+c = 2100500class A(str):
+    pass
+
+c, d, e = A(), A(), A()
+print(A.counter)
+c = 2100500
+print(A.counter)
+class A(str):
+    pass
+
+c, d, e = A(), A(), A()
+print(A.counter)
+c = 2100500
+print(A.counter)
+class A(str):
+    pass
+
+c, d, e = A(), A(), A()
+print(A.counter)
+c = 2100500
+print(A.counter)
+
+print(A.counter)

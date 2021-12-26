@@ -1,0 +1,12 @@
+@objcount
+class A:
+    def __init__(self, a = 3000):
+        print("BOOOM", a)
+    
+    def __del__(self):
+        print("YAAAA")
+
+c, d, e = A(), A(), A()
+print(A.counter)
+c = 100500
+print(A.counter)
