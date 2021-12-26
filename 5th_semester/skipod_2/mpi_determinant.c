@@ -5,11 +5,10 @@
 
 double det(int N, int myrank, int ranksize)
 {
-	//fprintf(stderr, "|%d %d|", myrank, ranksize);
 	int i,j,k;
 	double **A, tmp;
     A = (double**)malloc(sizeof(double*)*N);
-    for(int i = 0; i < N; i++) {
+    for(i = 0; i < N; i++) {
         A[i] = (double*)malloc(sizeof(double)*N);
     }
 	srand(42);
@@ -66,7 +65,6 @@ double det(int N, int myrank, int ranksize)
 			{
 				for (j = 0; j < N; j++) 
 				{
-					//fprintf(stderr, "*%f * %f k: %d, j: %d, i: %d myrank: %d\n", L[j] / tmp, A[k][j], k, j, i, myrank);
 					A[k][j] -= L[j] / tmp;
 				}	
 			}		
@@ -104,10 +102,10 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
 	int i, j, k;
-	int N[5] = {1000, 500, 1000, 2000, 5000};
+	int N[5] = {50, 100, 500, 1000, 2000};
 	double start1, finish1, runing_t, res;
 
-	for (i = 0; i < 1; i++) 
+	for (i = 0; i < 5; i++) 
 	{
 		runing_t = 0;
 		for (k = 0; k < 1; k++)
@@ -116,7 +114,6 @@ int main(int argc, char **argv)
 				start1 = MPI_Wtime();
 
 			res = det(N[i], myrank, ranksize);
-			fprintf(stderr, "res: %f\n", res);
 
 			if (myrank == 0)
 			{
