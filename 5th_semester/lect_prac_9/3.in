@@ -1,0 +1,4 @@
+T = Tester(int)
+print(T([(12,), ("12", 16)], []))
+print(T([(12,), ("12", 16), ("89", 8)], [ValueError, IndexError]))
+print(T([(12,), ("12", 16), ("89", 8), (1, 1, 1)], [ValueError, IndexError]))
