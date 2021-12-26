@@ -1,0 +1,10 @@
+@cast(str)
+def notsofun(a, b):
+    '''Not so funny'''
+    return a * 2 + b
+print(notsofun(12, 34) * 2)
+print(notsofun("12", "34") * 2)
+print(notsofun(12.5, 34.5) * 2)
+print(notsofun([1,2,3], [4,5,6]) * 2)
+print(notsofun.__name__)
+print(notsofun.__doc__)

@@ -1,0 +1,7 @@
+@counter
+def fun(a, b):
+    return a * 1 + b
+
+print(fun.counter())
+res = sum(fun(i, i + 1) for i in range(5))
+print(fun.counter(), res)

@@ -1,0 +1,6 @@
+@sizer
+class R(dict):
+    pass
+
+r = R(zip(range(2,12), range(2+100, 12+200, 2)))
+print(r, r.size)

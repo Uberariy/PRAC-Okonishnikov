@@ -1,0 +1,12 @@
+@Lock.locked
+class A(str):
+    pass
+
+a, b = A("a"), A("b")
+del b.lock
+a.lock = "S"
+b.lock = "S"
+print(a.lock)
+print(b.lock)
+a.lock = "S"
+print(b.lock)
