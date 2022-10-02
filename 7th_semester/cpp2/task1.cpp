@@ -14,43 +14,29 @@
 #include <vector>
 
 int main() {
-    std::vector<int> v {1, 2, 3};
-    std::vector<int> v2 {1, 2, 3};
-    std::vector<int> v3 {1, 2, 3};
+    std::vector<bool> v {false, false, false};
+    std::vector<bool> v2 {false, false, false};
 
-    // 1
-    for (auto x : v ) {
-        x = 5;
+    // 2
+    // for (auto& x : v ) {         --- Not compiling
+    //     x = true;
 
-    }
+    // }
 
-    for (auto x : v ) {
-        std::cout << x;
+    // for (auto x : v ) {
+    //     std::cout << x;
 
-    }
+    // }
 
     std::cout << "\n";
 
     // 2
-    for (auto& x : v2 ) {
-        x = 5;
+    for (auto&& x : v2 ) {
+        x = true;
 
     }
 
     for (auto x : v2 ) {
-        std::cout << x;
-
-    }
-
-    std::cout << "\n";
-
-    // 3
-    for (auto&& x : v3 ) {
-        x = 5;
-
-    }
-
-    for (auto x : v3 ) {
         std::cout << x;
 
     }

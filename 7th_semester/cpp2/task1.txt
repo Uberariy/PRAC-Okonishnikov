@@ -1,1 +1,20 @@
-В случае подобного объявления в цикле for, rvalue ссылка принимает тип lvalue ссылки, в случае если a имеет тип lvalue. Поэтому для контейнеров из STL, два этих цикла for эквивалентны. И если a объявлен как `vector<int> v;`, то x будет иметь тип `int& x`. Поэтому в случае циклов 2 и 3 в task1.cpp, в цикле можно изменять значения вектора. В случае если мы не хотим менять значения контейнера в подобном цикле можно итерироваться так: `for (auto x : v )`
+Решение задачи 1.
+
+Пример: std::vector<bool> v
+
+Таким образом, в случае:
+
+for (auto& x : v ) {}
+
+Компилятор пытается присвоить lvalue reference для типа rvalue, но это
+невозможно, так как вектор состоит из bool, которые rvalue:
+
+task1.cpp:35:20: error: cannot bind non-const lvalue reference of type ‘std::_Bit_reference&’ to an rvalue of type ‘std::_Bit_iterator::reference’ {aka ‘std::_Bit_reference’}
+   35 |     for (auto& x : v2 ) {
+      |
+
+При этом следующий код компилируется:
+
+for (auto&& x : v ) {}
+
+Пример: task1.cpp в этой директории
