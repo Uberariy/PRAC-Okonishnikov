@@ -48,7 +48,7 @@ struct list *curlistadd (struct list *L, char *w, int s, int n, int t)
         strcpy(L -> word, w);
         L -> number = n;
         L -> size = s;
-        L -> istoken = t;                           //printf("|%s|%d\t", L -> word, L -> istoken);
+        L -> istoken = t;                           
         L -> next = NULL;
     }
     else L -> next = curlistadd (L -> next, w, s, n, t);
@@ -58,23 +58,23 @@ struct list *curlistadd (struct list *L, char *w, int s, int n, int t)
 void listTOsargv (struct list *L, char ****sargv, int i, int j)
 {
     if (L != NULL)
-    {                                               //printf("\ti:%d, j:%d, %s", i, j, L -> word);
+    {                                               
         if (L -> istoken)
-        {                                           //printf("\n");
+        {                                      
             free((*sargv)[i][j]);     (*sargv)[i][j] = NULL;
             j=0;    i++;
         }
         else
-        {                                           //printf("   Writing word\n");
+        {                             
             strcpy ((*sargv)[i][j], L -> word);
             j++;
         }        
         listTOsargv (L -> next, sargv, i, j);
     }
     else
-    {                                               //printf("\ti:%d, j:%d\n", i, j);
+    {                                         
         free((*sargv)[i][j]);    (*sargv)[i][j] = NULL;
-        j=0;    i++;                                //printf("\ti:%d, j:%d Ending\n", i, j);
+        j=0;    i++;                       
         free((*sargv)[i][j]);    (*sargv)[i][j] = NULL;
     }
 }
@@ -170,10 +170,10 @@ void assemblyline (char ***sargv, char **stokenv, int stokenc)
                         dup2(fd[1], 1);
                     close(fd[0]);   close(fd[1]);
                     for (j=prev; ((j<stokenc) && (strcmp(stokenv[j], "|") != 0)); j++)
-                    {                                                       //fprintf(stderr, "|%d|", j);
+                    {                                           
                         if (strcmp(stokenv[j], "<") == 0)
                         {
-                            fd1 = open(sargv[j+1][0], O_RDONLY);            //fprintf(stderr, "*%s*", sargv[j+1][0]);
+                            fd1 = open(sargv[j+1][0], O_RDONLY);        
                             if (fd1 < 0) fprintf(stderr, BACKGROUND_RED "%s: No such file or directory" COLORENDS "\n", sargv[j+1][0]);
                             else { dup2(fd1, 0);   close(fd1); }
                         }
@@ -204,7 +204,7 @@ void assemblyline (char ***sargv, char **stokenv, int stokenc)
         i++;
     }
     while(wait(&stat) != -1)
-    {   //fprintf(stderr, "\t[%d[[%d[\n", stat, WEXITSTATUS(stat));
+    {
         if ((WIFEXITED(stat) == 0) || (WEXITSTATUS(stat) != 0))
         {   
             if (WEXITSTATUS(stat) != 1)
@@ -235,8 +235,8 @@ int insidecmd(char ***sargv, int sargc, int strmax)
         }
         else if (chdir(sargv[0][1]) == 0)
         { 
-            curpathsize += strmax+2;                             //printf("curstrmax: %d\n", curstrmax);
-            curpath = (char *)realloc(curpath, curpathsize);        //printf("curpathsize: %d\n", curpathsize);
+            curpathsize += strmax+2;
+            curpath = (char *)realloc(curpath, curpathsize);
             if (sargv[0][1][0] == '/') 
             {
                 free(curpath);
@@ -253,13 +253,13 @@ int insidecmd(char ***sargv, int sargc, int strmax)
                 while((sargv[0][1][i] != '/') && (sargv[0][1][i] != '\0'))
                 {
                     curpathelem[j] = sargv[0][1][i];
-                    i++; j++;                                       //printf("curpathelem: %s\n", curpathelem);
+                    i++; j++;
                 }
-                curpathelem[j] = '\0';                              //printf("curpath: %s\n", curpath);
+                curpathelem[j] = '\0';
                 if (strcmp(curpathelem, "..") == 0)
                 {                                                   
                     for (k=0; (curpath[k] != '\0'); k++)
-                        if (curpath[k] == '/') j=k;                 //printf("k %d   j %d\n", k, j); // Может привести к ошибкt стрката 
+                        if (curpath[k] == '/') j=k;
                     for (; j<=k; j++)
                     {
                         curpath[j] = '\0';
@@ -285,17 +285,17 @@ int insidecmd(char ***sargv, int sargc, int strmax)
 
 int main(int argc, char *argv[])
 {
-    struct list *curlist;          // List to determine maxsize of a word in a single cmd
+    struct list *curlist;
     struct pidddlist *pidlist;
     char shellname[]="HAL9000:";
     char c;
 
     int sargc, stokenc, curstrsize, strmax, pidarraynum, pidarraymax;
-    int quotesflag, begincmd, readprev, tokenflag, multiple;                // Flags for quotes in a command line; for start of cmd;
-    int tmpflag=1;                        // Minor flags
-    int i, j, k, fd1, stat;                           // Counters
+    int quotesflag, begincmd, readprev, tokenflag, multiple;
+    int tmpflag=1;
+    int i, j, k, fd1, stat; // Flags
     char **stokenv; 
-    char ***sargv;                      // Argv of a cmd
+    char ***sargv; 
 
     pid_t *pidarray;
     pid_t pid2, pid;
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
 
             if (curstrsize>0)
             {
-                curstr[curstrsize] = '\0';                          //printf("sargc = %d\n", sargc);
+                curstr[curstrsize] = '\0';
                 curlist = curlistadd(curlist,curstr,curstrsize,sargc,tokenflag);   // Create Dynamic memmory for curlist
                 if (strmax < curstrsize) strmax = curstrsize;
                 curstrsize = 0;
@@ -411,31 +411,22 @@ int main(int argc, char *argv[])
             continue;
         }
 
-                                                                    //printf("%d, %d, %d\n", stokenc, sargc, strmax);
+
         stokenv = (char **)malloc((stokenc+1)*(sizeof(char *))); 
         for (i = 0; i<stokenc; i++)
             stokenv[i] = (char *)malloc(strmax+2);
         listTOtoken (curlist, &(stokenv), 0);
-                                                                    //for(i = 0; i<=stokenc; i++)    printf("%s\t", stokenv[i]);
-                                                    //printf("\n");
-                                                                    //printf("%d, %d, %d", stokenc, sargc, strmax);
-        sargv = (char ***)malloc((stokenc+2)*(sizeof(char **)));      //printf("clear\t");  // Create Dynamic memory for argv
+        sargv = (char ***)malloc((stokenc+2)*(sizeof(char **)));
         for (i = 0; i<stokenc+2; i++)
-        {                                                           //printf("%d, %d, %d", stokenc, sargc, strmax);
-            sargv[i] = (char **)malloc((sargc+2)*(sizeof(char *)));     //printf("i %d\t", i);    // ЗАМЕНИТЬ НА МАКСИМАЛЬНОЕ КОЛИЧЕСТВО СЛОВ В СТРОКЕ
+        {     
+            sargv[i] = (char **)malloc((sargc+2)*(sizeof(char *)));    // ЗАМЕНИТЬ НА МАКСИМАЛЬНОЕ КОЛИЧЕСТВО СЛОВ В СТРОКЕ
             for (j = 0; j<sargc+2; j++)
             {
-                sargv[i][j] = (char *)malloc(strmax+2);     //printf("i %d, j %d\t", i, j);
+                sargv[i][j] = (char *)malloc(strmax+2);    
             }
-        }                                                           //printf("Memmory made\n");
+        }                                  
         listTOsargv (curlist, &(sargv), 0, 0);
 
-                           //                         for(i = 0; i<=stokenc; i++)
-                             //                       { 
-                               //                         printf("\nСтрока %d\t", i);
-                                 //                       for(j=0; j<sargc+2; j++)
-                                   //                        printf("|%s|\t", sargv[i][j]);
-                                                    //}printf("\n");
 
         multiple = 0; i = 0;
         while (i < stokenc) 
@@ -448,7 +439,7 @@ int main(int argc, char *argv[])
         }
         background = 0; i = 0;
         while (i < stokenc) 
-        {                                           //printf("%d, %s, %d", stokenc, stokenv[i], i);
+        {                         
             if (strcmp(stokenv[i], "&") == 0) 
             {   
                 background=1;     break;
@@ -480,10 +471,10 @@ int main(int argc, char *argv[])
                     if ((pid = fork()) == 0)
                     {        
                         for (j=0; j < stokenc; j++)
-                        {           //fprintf(stderr, "|%d|", j);
+                        { 
                             if (strcmp(stokenv[j], "<") == 0)
                             {
-                                fd1 = open(sargv[j+1][0], O_RDONLY);    //fprintf(stderr, "*%s*", sargv[j+1][0]);
+                                fd1 = open(sargv[j+1][0], O_RDONLY); 
                                 if (fd1 < 0) fprintf(stderr, BACKGROUND_RED "%s: No such file or directory" COLORENDS "\n", sargv[j+1][0]);
                                 else {  dup2(fd1, 0);   close(fd1); }
                             }
@@ -513,7 +504,7 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        waitpid(pid, &stat, 0);    //fprintf(stderr, "\t[%d[[%d[\t", stat, WEXITSTATUS(stat));
+                        waitpid(pid, &stat, 0);
                         if ((WIFEXITED(stat) == 0) || (WEXITSTATUS(stat) != 0))
                         {   
                             if (WEXITSTATUS(stat) != 1)
@@ -540,8 +531,8 @@ int main(int argc, char *argv[])
         // Анализ Фоновых процессов
         for (i = 1; i <= pidarraynum; i++)
         {
-            j = waitpid(pidarray[i], &stat, WNOHANG);           //printf("|HERE!! i: %d, stat: %d, pid_t: %d, j: %d|\n", i, stat, pidarray[i], j);
-            if (WEXITSTATUS(stat) != 1) stat = WEXITSTATUS(stat);       //printf("\t{%d{{%d{\t", stat, WEXITSTATUS(stat));
+            j = waitpid(pidarray[i], &stat, WNOHANG);
+            if (WEXITSTATUS(stat) != 1) stat = WEXITSTATUS(stat); 
             if (j == pidarray[i])
             {
                 if ((WIFEXITED(stat) == 0) || (WEXITSTATUS(stat) != 0))
@@ -560,16 +551,15 @@ int main(int argc, char *argv[])
         for (i = 0; i<stokenc; i++)
             free(stokenv[i]);
         free(stokenv);
-                                                    //printf("%d, %d, %d", stokenc, sargc, strmax);
         for (i = 0; i<stokenc+2; i++)               // Clear Dynamic memory for argv
         {
             for (j = 0; j<sargc+2; j++)
             {
-                free(sargv[i][j]);      //printf("i %d, j %d\t", i, j);
+                free(sargv[i][j]);  
             }
-            free(sargv[i]); //printf("i %d\t", i);
+            free(sargv[i]);
         }
-        free(sargv);    //printf("clear\t");
+        free(sargv);
         
         freelist(curlist);                      // Clear Dynamic memory for curlist
 
